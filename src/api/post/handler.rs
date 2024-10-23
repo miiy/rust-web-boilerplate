@@ -1,11 +1,11 @@
 use super::dto;
 use super::service::Service;
-use crate::error::APIError;
+use crate::api::error::APIError;
 use actix_web::{delete, get, post, put, web, HttpRequest, HttpResponse};
 use sqlx::MySqlPool;
 use std::collections::HashMap;
 
-#[get("/users")]
+#[get("/posts")]
 async fn list(req: HttpRequest, pool: web::Data<MySqlPool>) -> Result<HttpResponse, APIError> {
     let query = web::Query::<HashMap<String, String>>::from_query(req.query_string()).unwrap();
     let page = query
@@ -21,7 +21,7 @@ async fn list(req: HttpRequest, pool: web::Data<MySqlPool>) -> Result<HttpRespon
     Ok(HttpResponse::Ok().json(resp))
 }
 
-#[get("/users/{id}")]
+#[get("/posts/{id}")]
 async fn detail(
     path: web::Path<String>,
     pool: web::Data<MySqlPool>,
@@ -34,7 +34,7 @@ async fn detail(
     Ok(HttpResponse::Ok().json(resp))
 }
 
-#[post("/users")]
+#[post("/posts")]
 async fn create(
     params: web::Json<dto::CreateRequest>,
     pool: web::Data<MySqlPool>,
@@ -43,7 +43,7 @@ async fn create(
     Ok(HttpResponse::Created().json(resp))
 }
 
-#[put("/users/{id}")]
+#[put("/posts/{id}")]
 async fn update(
     path: web::Path<String>,
     params: web::Json<dto::UpdateRequest>,
@@ -57,7 +57,7 @@ async fn update(
     Ok(HttpResponse::Ok().json(resp))
 }
 
-#[delete("/users/{id}")]
+#[delete("/posts/{id}")]
 async fn delete(
     path: web::Path<String>,
     pool: web::Data<MySqlPool>,

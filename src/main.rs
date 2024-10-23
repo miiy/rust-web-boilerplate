@@ -1,36 +1,31 @@
+use actix_files as fs;
 use actix_web::{middleware::Logger, web, App, HttpServer};
-use dotenv::dotenv;
-use rust_web::{config_api, config_app, db, error, middleware, AppState};
-use std::env;
+use rust_web::{api::{error, routes::config_api}, web::routes::config_app, config, db, middleware, AppState};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    // dotenv
-    dotenv().ok();
+    // config
+    let c = config::Config::new().expect("config error");
 
     // env_logger
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
     // db
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    let pool = db::init_pool(&database_url)
+    let pool = db::init_pool(&c.database.url)
         .await
         .expect("Failed to create pool");
 
     // redis
-    let redis_url = env::var("REDIS_URL").expect("REDIS_URL must be set");
-    let redis = redis::Client::open(redis_url).expect("Failed to open redis");
+    let redis = redis::Client::open(c.redis.url.clone()).expect("Failed to open redis");
 
     // actix web
-    let app_name = env::var("APP_NAME").expect("APP_NAME must be set");
-    let addrs = env::var("ADDRS").expect("ADDRS must be set");
-    log::info!("starting HTTP server at {addrs}");
+    log::info!("Starting HTTP server at {}", c.server.addrs);
     HttpServer::new(move || {
         App::new()
-            .wrap(middleware::cors())
+            .wrap(middleware::cors::cors())
             .wrap(Logger::default())
             .app_data(web::Data::new(AppState {
-                app_name: app_name.clone(),
+                app_name: c.app.name.clone(),
             }))
             .app_data(
                 web::JsonConfig::default()
@@ -41,8 +36,13 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(redis.clone()))
             .configure(config_app)
             .service(web::scope("/api").configure(config_api))
+            .service(fs::Files::new("/static", "./static").use_last_modified(true))
+            .service(
+                web::resource("/favicon.ico")
+                    .route(web::get().to(|| async { fs::NamedFile::open("./static/favicon.ico") })),
+            )
     })
-    .bind(addrs)?
+    .bind(&c.server.addrs)?
     .run()
     .await
 }

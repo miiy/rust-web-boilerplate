@@ -6,11 +6,15 @@ Rust web boilerplate with Actix Web, SQLx, redis-rs, Askama
 
 - CORS
 
+- static files
+
 - MySQL
 
 - Redis
 
 - Askama
+
+- chrono
 
 Actix Web: <https://github.com/actix/actix-web>
 
@@ -19,6 +23,10 @@ SQLx: <https://github.com/launchbadge/sqlx>
 redis-rs: <https://github.com/redis-rs/redis-rs>
 
 Askama: <https://github.com/djc/askama>
+
+chrono: <https://github.com/chronotope/chrono>
+
+config-rs: <https://github.com/rust-cli/config-rs>
 
 ## Getting Started
 

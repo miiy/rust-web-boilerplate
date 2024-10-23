@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page_title }} - {{ app_name }}</title>
+    <meta name="keywords" content="{{ keywords }}"/>
+    <meta name="description" content="{{ description }}"/>
+    <link type="text/css" rel="stylesheet" href="/static/css/main.css" />
+    <script src="/static/js/main.js"></script>
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+    <header>
+        {% include "partials/navbar.html"  %}
+    </header>
+    <main>
+        <div class="container">
+        {% block content %}{% endblock %}
+        </div>
+    </main>
+    {% include "partials/footer.html" %}
+</body>
+</html>
