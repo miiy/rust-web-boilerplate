@@ -1,17 +1,15 @@
-use derive_more::derive::Display;
+use crate::web::errors::ServiceError;
 
 pub struct Service;
-#[derive(Display)]
-pub struct HealthError;
 
 impl Service {
-    pub async fn health(redis: &redis::Client) -> Result<(), HealthError> {
+    pub async fn health(redis: &redis::Client) -> Result<(), ServiceError> {
         let mut con = redis
             .get_multiplexed_async_connection()
             .await
             .map_err(|e| {
                 log::error!("{e}");
-                HealthError{}
+                ServiceError::InternalServerError
             })?;
 
         let ret = redis::cmd("PING")
@@ -19,7 +17,7 @@ impl Service {
             .await
             .map_err(|e| {
                 log::error!("{e}");
-                HealthError{}
+                ServiceError::InternalServerError
             })?;
         log::info!("{}", ret);
 

@@ -1,6 +1,6 @@
 use super::dto;
 use super::service::Service;
-use crate::api::error::APIError;
+use crate::api::errors::APIError;
 use actix_web::{delete, get, post, put, web, HttpRequest, HttpResponse};
 use sqlx::MySqlPool;
 use std::collections::HashMap;

@@ -2,7 +2,6 @@ use crate::AppState;
 use actix_web::{get, web, HttpResponse, Responder};
 use askama::Template;
 
-
 #[derive(Template)]
 #[template(path = "about/index.html")]
 struct AboutTemplate<'a> {

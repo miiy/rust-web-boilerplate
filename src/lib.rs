@@ -1,8 +1,8 @@
-pub mod db;
-pub mod config;
 pub mod api;
-pub mod web;
+pub mod config;
+pub mod db;
 pub mod middleware;
+pub mod web;
 
 pub struct AppState {
     pub app_name: String,

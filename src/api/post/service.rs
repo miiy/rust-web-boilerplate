@@ -1,6 +1,6 @@
 use super::dto;
 use super::model::Post;
-use crate::api::error::APIError;
+use crate::api::errors::APIError;
 use log;
 use sqlx::MySqlPool;
 

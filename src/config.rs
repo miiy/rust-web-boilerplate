@@ -43,10 +43,7 @@ impl Config {
             // Add in the current environment file
             // Default to 'development' env
             // Note that this file is _optional_
-            .add_source(
-                File::with_name(&format!("config/{}", run_mode))
-                    .required(false),
-            )
+            .add_source(File::with_name(&format!("config/{}", run_mode)).required(false))
             .build()?;
 
         // You can deserialize (and thus freeze) the entire configuration as
