@@ -1,6 +1,7 @@
 use super::dto;
 use super::model::User;
 use crate::api::errors::APIError;
+use chrono::Utc;
 use log;
 use sqlx::MySqlPool;
 
@@ -22,6 +23,7 @@ impl Service {
             .map(|user| dto::ListResponseItem {
                 name: user.name,
                 email: user.email,
+                create_time: user.create_time.unwrap(),
             })
             .collect();
 
@@ -38,6 +40,7 @@ impl Service {
             let resp = dto::DetailResponse {
                 name: user.name,
                 email: user.email,
+                create_time: user.create_time.unwrap(),
             };
             Ok(resp)
         } else {
@@ -53,7 +56,11 @@ impl Service {
             id: 0,
             name: req.name.clone(),
             email: req.email.clone(),
+            create_time: Some(Utc::now().naive_local()),
+            update_time: None,
+            delete_time: None,
         };
+        println!("{:?}", user);
         let user_id = User::create(&pool, &user).await.map_err(|e| {
             log::error!("{e}");
             APIError::InternalError(0)
@@ -72,6 +79,9 @@ impl Service {
             id: id,
             name: req.name.clone(),
             email: req.email.clone(),
+            create_time: None,
+            update_time: Some(Utc::now().naive_local()),
+            delete_time: None,
         };
         let user_id = User::update(&pool, &user).await.map_err(|e| {
             log::error!("{e}");

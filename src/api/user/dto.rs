@@ -1,3 +1,4 @@
+use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 
 // list
@@ -9,6 +10,7 @@ pub struct ListResponse {
 pub struct ListResponseItem {
     pub name: String,
     pub email: String,
+    pub create_time: NaiveDateTime,
 }
 
 // detail
@@ -21,6 +23,7 @@ pub struct DetailRequest {
 pub struct DetailResponse {
     pub name: String,
     pub email: String,
+    pub create_time: NaiveDateTime,
 }
 
 // create

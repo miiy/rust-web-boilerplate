@@ -1,5 +1,4 @@
 -- Add up migration script here
--- Add migration script here
 START TRANSACTION;
 
 CREATE TABLE IF NOT EXISTS `users`

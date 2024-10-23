@@ -33,22 +33,20 @@ config-rs: <https://github.com/rust-cli/config-rs>
 create database
 
 ```sql
-CREATE DATABASE rust_test DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE rust_web DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
 migrate
 
 ```bash
 cargo install sqlx-cli
-export DATABASE_URL=mysql://root:123456@localhost/rust_test
+export DATABASE_URL=mysql://root:123456@localhost/rust_web
 sqlx migrate run
 ```
 
-set environment variables:
+edit config
 
-```bash
-cp .env.example .env
-```
+config/*.yaml
 
 ## Running
 
