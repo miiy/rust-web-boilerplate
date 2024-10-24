@@ -3,6 +3,7 @@ use super::model::Post;
 use crate::api::errors::APIError;
 use log;
 use sqlx::MySqlPool;
+use time::OffsetDateTime;
 
 pub struct Service;
 
@@ -24,6 +25,12 @@ impl Service {
                 user_id: post.user_id,
                 title: post.title,
                 content: post.content,
+                create_time: post
+                    .create_time
+                    .unwrap_or_else(|| OffsetDateTime::from_unix_timestamp(0).unwrap()),
+                update_time: post
+                    .update_time
+                    .unwrap_or_else(|| OffsetDateTime::from_unix_timestamp(0).unwrap()),
             })
             .collect();
 
@@ -42,6 +49,12 @@ impl Service {
                 user_id: post.user_id,
                 title: post.title,
                 content: post.content,
+                create_time: post
+                    .create_time
+                    .unwrap_or_else(|| OffsetDateTime::from_unix_timestamp(0).unwrap()),
+                update_time: post
+                    .update_time
+                    .unwrap_or_else(|| OffsetDateTime::from_unix_timestamp(0).unwrap()),
             };
             Ok(resp)
         } else {
@@ -58,6 +71,8 @@ impl Service {
             user_id: 0,
             title: req.title.clone(),
             content: req.content.clone(),
+            create_time: Some(OffsetDateTime::now_utc()),
+            update_time: Some(OffsetDateTime::now_utc()),
         };
         let post_id = Post::create(&pool, &post).await.map_err(|e| {
             log::error!("{e}");
@@ -78,6 +93,8 @@ impl Service {
             user_id: 0,
             title: req.title.clone(),
             content: req.content.clone(),
+            create_time: None,
+            update_time: Some(OffsetDateTime::now_utc()),
         };
         let post_id = Post::update(&pool, &post).await.map_err(|e| {
             log::error!("{e}");
@@ -92,7 +109,6 @@ impl Service {
             log::error!("{e}");
             APIError::InternalError(0)
         })?;
-        Ok(dto::DeleteResponse)
-        // .json(json!({"message": "Deleted"}))
+        Ok(dto::DeleteResponse {})
     }
 }

@@ -1,5 +1,5 @@
-use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
+use time::OffsetDateTime;
 
 // list
 #[derive(Debug, Serialize)]
@@ -10,7 +10,6 @@ pub struct ListResponse {
 pub struct ListResponseItem {
     pub name: String,
     pub email: String,
-    pub create_time: NaiveDateTime,
 }
 
 // detail
@@ -23,7 +22,10 @@ pub struct DetailRequest {
 pub struct DetailResponse {
     pub name: String,
     pub email: String,
-    pub create_time: NaiveDateTime,
+    #[serde(with = "time::serde::iso8601")]
+    pub create_time: OffsetDateTime,
+    #[serde(with = "time::serde::iso8601")]
+    pub update_time: OffsetDateTime,
 }
 
 // create
@@ -51,5 +53,10 @@ pub struct UpdateResponse {
 }
 
 // delete
+// pub struct DeleteResponse;
+// json: null
+//
+// pub struct DeleteResponse{}
+// json: {}
 #[derive(Debug, Serialize)]
-pub struct DeleteResponse;
+pub struct DeleteResponse {}

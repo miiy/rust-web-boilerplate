@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use time::OffsetDateTime;
 
 // list
 #[derive(Debug, Serialize)]
@@ -11,20 +12,28 @@ pub struct ListResponseItem {
     pub user_id: u64,
     pub title: String,
     pub content: String,
+    #[serde(with = "time::serde::iso8601")]
+    pub create_time: OffsetDateTime,
+    #[serde(with = "time::serde::iso8601")]
+    pub update_time: OffsetDateTime,
 }
 
 // detail
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct DetailRequest {
     pub id: u64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize)]
 pub struct DetailResponse {
     pub id: u64,
     pub user_id: u64,
     pub title: String,
     pub content: String,
+    #[serde(with = "time::serde::iso8601")]
+    pub create_time: OffsetDateTime,
+    #[serde(with = "time::serde::iso8601")]
+    pub update_time: OffsetDateTime,
 }
 
 // create
@@ -54,4 +63,4 @@ pub struct UpdateResponse {
 
 // delete
 #[derive(Debug, Serialize)]
-pub struct DeleteResponse;
+pub struct DeleteResponse {}

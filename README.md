@@ -14,7 +14,7 @@ Rust web boilerplate with Actix Web, SQLx, redis-rs, Askama
 
 - Askama
 
-- chrono
+- time
 
 Actix Web: <https://github.com/actix/actix-web>
 
@@ -24,7 +24,9 @@ redis-rs: <https://github.com/redis-rs/redis-rs>
 
 Askama: <https://github.com/djc/askama>
 
-chrono: <https://github.com/chronotope/chrono>
+serde: <https://github.com/serde-rs/serde>
+
+time: <https://github.com/time-rs/time>
 
 config-rs: <https://github.com/rust-cli/config-rs>
 

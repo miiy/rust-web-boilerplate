@@ -1,10 +1,13 @@
 use sqlx::FromRow;
+use time::OffsetDateTime;
 
-#[derive(Debug, FromRow)]
+#[derive(Default, Debug, FromRow)]
+#[sqlx(default)]
 pub struct Post {
     pub id: u64,
     pub user_id: u64,
     pub title: String,
     pub content: String,
-    // pub created_at: OffsetDateTime,
+    pub create_time: Option<OffsetDateTime>,
+    pub update_time: Option<OffsetDateTime>,
 }
