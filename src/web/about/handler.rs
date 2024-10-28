@@ -12,8 +12,8 @@ struct AboutTemplate<'a> {
 }
 
 #[get("/about")]
-async fn index(data: web::Data<AppState>) -> impl Responder {
-    let app_name = &data.app_name;
+async fn index(app_state: web::Data<AppState>) -> impl Responder {
+    let app_name = &app_state.app_name;
     let tmpl = AboutTemplate {
         app_name: app_name,
         page_title: "About",

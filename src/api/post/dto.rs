@@ -9,8 +9,9 @@ pub struct ListResponse {
 #[derive(Debug, Serialize)]
 pub struct ListResponseItem {
     pub id: u64,
-    pub user_id: u64,
+    pub category_id: u64,
     pub title: String,
+    pub author: String,
     pub content: String,
     #[serde(with = "time::serde::iso8601")]
     pub create_time: OffsetDateTime,
@@ -27,8 +28,9 @@ pub struct DetailRequest {
 #[derive(Debug, Serialize)]
 pub struct DetailResponse {
     pub id: u64,
-    pub user_id: u64,
+    pub category_id: u64,
     pub title: String,
+    pub author: String,
     pub content: String,
     #[serde(with = "time::serde::iso8601")]
     pub create_time: OffsetDateTime,
@@ -39,8 +41,9 @@ pub struct DetailResponse {
 // create
 #[derive(Debug, Deserialize)]
 pub struct CreateRequest {
-    pub user_id: u64,
+    pub category_id: u64,
     pub title: String,
+    pub author: String,
     pub content: String,
 }
 
@@ -52,7 +55,9 @@ pub struct CreateResponse {
 // update
 #[derive(Debug, Deserialize)]
 pub struct UpdateRequest {
+    pub category_id: u64,
     pub title: String,
+    pub author: String,
     pub content: String,
 }
 

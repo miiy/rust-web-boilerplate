@@ -11,5 +11,4 @@ pub struct User {
     pub email: String,
     pub create_time: Option<OffsetDateTime>,
     pub update_time: Option<OffsetDateTime>,
-    pub delete_time: Option<OffsetDateTime>,
 }

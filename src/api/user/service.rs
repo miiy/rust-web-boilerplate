@@ -62,7 +62,6 @@ impl Service {
             email: req.email,
             create_time: Some(OffsetDateTime::now_utc()),
             update_time: Some(OffsetDateTime::now_utc()),
-            delete_time: None,
         };
         let user_id = User::create(&pool, &user).await.map_err(|e| {
             log::error!("{e}");
@@ -84,7 +83,6 @@ impl Service {
             email: req.email,
             create_time: None,
             update_time: Some(OffsetDateTime::now_utc()),
-            delete_time: None,
         };
         let user_id = User::update(&pool, &user).await.map_err(|e| {
             log::error!("{e}");

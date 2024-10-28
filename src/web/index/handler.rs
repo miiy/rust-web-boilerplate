@@ -12,8 +12,8 @@ struct IndexTemplate<'a> {
 }
 
 #[get("/")]
-async fn index(data: web::Data<AppState>) -> impl Responder {
-    let app_name = &data.app_name;
+async fn index(app_state: web::Data<AppState>) -> impl Responder {
+    let app_name = &app_state.app_name;
     let index = IndexTemplate {
         app_name: app_name,
         page_title: "Home",

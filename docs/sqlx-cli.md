@@ -15,7 +15,7 @@ sqlx migrate add -r users
 migrate
 
 ```bash
-export DATABASE_URL=mysql://root:123456@localhost/rust_test
+export DATABASE_URL=mysql://root:123456@localhost/rust_web
 sqlx migrate run
 ```
 

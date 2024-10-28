@@ -26,19 +26,21 @@ async fn main() -> std::io::Result<()> {
     // actix web
     log::info!("Starting HTTP server at {}", c.server.addrs);
     HttpServer::new(move || {
+        let shared_data = web::Data::new(AppState {
+            app_name: c.app.name.clone(),
+            db: pool.clone(),
+            redis: redis.clone(),
+        });
+
         App::new()
             .wrap(middleware::cors::cors())
             .wrap(Logger::default())
-            .app_data(web::Data::new(AppState {
-                app_name: c.app.name.clone(),
-            }))
+            .app_data(shared_data)
             .app_data(
                 web::JsonConfig::default()
                     // register error_handler for JSON extractors.
                     .error_handler(errors::json_error_handler),
             )
-            .app_data(web::Data::new(pool.clone()))
-            .app_data(web::Data::new(redis.clone()))
             .configure(config_app)
             .service(web::scope("/api").configure(config_api))
             .service(fs::Files::new("/static", "./static").use_last_modified(true))

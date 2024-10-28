@@ -22,8 +22,9 @@ impl Service {
             .into_iter()
             .map(|post| dto::ListResponseItem {
                 id: post.id,
-                user_id: post.user_id,
+                category_id: post.category_id,
                 title: post.title,
+                author: post.author,
                 content: post.content,
                 create_time: post
                     .create_time
@@ -46,8 +47,9 @@ impl Service {
         if let Some(post) = post_option {
             let resp = dto::DetailResponse {
                 id: post.id,
-                user_id: post.user_id,
+                category_id: post.category_id,
                 title: post.title,
+                author: post.author,
                 content: post.content,
                 create_time: post
                     .create_time
@@ -68,9 +70,10 @@ impl Service {
     ) -> Result<dto::CreateResponse, APIError> {
         let post = Post {
             id: 0,
-            user_id: 0,
-            title: req.title.clone(),
-            content: req.content.clone(),
+            category_id: req.category_id,
+            title: req.title,
+            author: req.author,
+            content: req.content,
             create_time: Some(OffsetDateTime::now_utc()),
             update_time: Some(OffsetDateTime::now_utc()),
         };
@@ -90,9 +93,10 @@ impl Service {
     ) -> Result<dto::UpdateResponse, APIError> {
         let post = Post {
             id: id,
-            user_id: 0,
-            title: req.title.clone(),
-            content: req.content.clone(),
+            category_id: req.category_id,
+            title: req.title,
+            author: req.author,
+            content: req.content,
             create_time: None,
             update_time: Some(OffsetDateTime::now_utc()),
         };

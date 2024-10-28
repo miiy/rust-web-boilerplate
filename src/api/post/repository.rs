@@ -6,11 +6,13 @@ impl Post {
     pub async fn create(pool: &MySqlPool, item: &Post) -> Result<u64, sqlx::Error> {
         sqlx::query(
             "
-        INSERT INTO posts (`title`, `content`, `create_time`, `update_time`)
-        VALUES(?, ?)
+        INSERT INTO posts (`category_id`, `title`, `author`, `content`, `create_time`, `update_time`)
+        VALUES(?, ?, ?, ?, ?, ?)
         ",
         )
-        .bind(&item.title)
+        .bind(&item.category_id)
+            .bind(&item.title)
+            .bind(&item.author)
         .bind(&item.content)
         .bind(&item.create_time)
         .bind(&item.update_time)
@@ -22,7 +24,7 @@ impl Post {
     pub async fn find(pool: &MySqlPool, id: u64) -> Result<Option<Post>, sqlx::Error> {
         let item: Option<Post> = sqlx::query_as(
             "
-        SELECT `id`, `title`, `content`, `create_time`, `update_time`
+        SELECT `id`, `category_id`, `title`,`author`, `content`, `create_time`, `update_time`
         FROM `posts`
         WHERE `id`=? AND `delete_time` IS NULL
         ",
@@ -44,7 +46,7 @@ impl Post {
 
         let posts: Vec<Post> = sqlx::query_as(
             "
-        SELECT `id`, `title`, `content`
+        SELECT `id`, `category_id`, `title`, `author`, `content`
         FROM `posts`
         WHERE `delete_time` IS NULL
         LIMIT ? OFFSET ?
@@ -61,11 +63,13 @@ impl Post {
     pub async fn update(pool: &MySqlPool, item: &Post) -> Result<u64, sqlx::Error> {
         sqlx::query(
             "
-        UPDATE posts SET `title` = ?, `content` = ?, `update_time` = ?
+        UPDATE posts SET `category_id` = ?, `title` = ?, `author` = ?, `content` = ?, `update_time` = ?
         WHERE `id`=?
         ",
         )
-        .bind(&item.title)
+            .bind(&item.category_id)
+            .bind(&item.title)
+            .bind(&item.author)
         .bind(&item.content)
         .bind(&item.update_time)
         .bind(&item.id)
