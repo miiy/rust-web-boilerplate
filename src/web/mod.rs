@@ -1,5 +1,6 @@
 pub mod about;
-pub mod errors;
+mod auth;
+pub mod error;
 pub mod health;
 pub mod index;
 pub mod post;

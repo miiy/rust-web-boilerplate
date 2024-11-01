@@ -1,4 +1,5 @@
 use super::about;
+use super::auth;
 use super::health;
 use super::index;
 use super::post;
@@ -9,4 +10,5 @@ pub fn config_app(cfg: &mut web::ServiceConfig) {
     about::routes::init_routes(cfg);
     health::routes::init_routes(cfg);
     post::routes::init_routes(cfg);
+    auth::routes::init_routes(cfg);
 }

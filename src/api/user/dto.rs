@@ -1,17 +1,6 @@
 use serde::{Deserialize, Serialize};
 use time::OffsetDateTime;
 
-// list
-#[derive(Debug, Serialize)]
-pub struct ListResponse {
-    pub lists: Vec<ListResponseItem>,
-}
-#[derive(Debug, Serialize)]
-pub struct ListResponseItem {
-    pub name: String,
-    pub email: String,
-}
-
 // detail
 #[derive(Debug, Serialize, Deserialize)]
 pub struct DetailRequest {
@@ -28,18 +17,6 @@ pub struct DetailResponse {
     pub update_time: OffsetDateTime,
 }
 
-// create
-#[derive(Debug, Deserialize)]
-pub struct CreateRequest {
-    pub name: String,
-    pub email: String,
-}
-
-#[derive(Debug, Serialize)]
-pub struct CreateResponse {
-    pub id: u64,
-}
-
 // update
 #[derive(Debug, Deserialize)]
 pub struct UpdateRequest {
@@ -51,12 +28,3 @@ pub struct UpdateRequest {
 pub struct UpdateResponse {
     pub id: u64,
 }
-
-// delete
-// pub struct DeleteResponse;
-// json: null
-//
-// pub struct DeleteResponse{}
-// json: {}
-#[derive(Debug, Serialize)]
-pub struct DeleteResponse {}

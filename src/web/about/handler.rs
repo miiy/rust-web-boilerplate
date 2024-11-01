@@ -14,11 +14,11 @@ struct AboutTemplate<'a> {
 #[get("/about")]
 async fn index(app_state: web::Data<AppState>) -> impl Responder {
     let app_name = &app_state.app_name;
-    let tmpl = AboutTemplate {
+    let t = AboutTemplate {
         app_name: app_name,
         page_title: "About",
         keywords: "keywords",
         description: "description",
     };
-    HttpResponse::Ok().body(tmpl.render().unwrap())
+    HttpResponse::Ok().body(t.render().unwrap())
 }

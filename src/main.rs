@@ -1,7 +1,7 @@
 use actix_files as fs;
 use actix_web::{middleware::Logger, web, App, HttpServer};
 use rust_web::{
-    api::{errors, routes::config_api},
+    api::{error, routes::config_api},
     config, db, middleware,
     web::routes::config_app,
     AppState,
@@ -39,7 +39,7 @@ async fn main() -> std::io::Result<()> {
             .app_data(
                 web::JsonConfig::default()
                     // register error_handler for JSON extractors.
-                    .error_handler(errors::json_error_handler),
+                    .error_handler(error::json_error_handler),
             )
             .configure(config_app)
             .service(web::scope("/api").configure(config_api))

@@ -1,12 +1,15 @@
+use crate::web::error::AppError;
 use crate::AppState;
-use actix_web::{web, HttpRequest, HttpResponse, Responder};
+use actix_web::{web, Error, HttpRequest, HttpResponse, Responder};
 use askama::Template;
 use std::collections::HashMap;
-use crate::web::errors::ServiceError;
 
-// /posts
-pub async fn index(req: HttpRequest, app_state: web::Data<AppState>) -> Result<HttpResponse, ServiceError> {
-    let query = web::Query::<HashMap<String, String>>::from_query(req.query_string()).unwrap();
+// GET /posts
+pub async fn index(
+    req: HttpRequest,
+    app_state: web::Data<AppState>,
+) -> Result<HttpResponse, Error> {
+    let query = web::Query::<HashMap<String, String>>::from_query(req.query_string())?;
     let page = query
         .get("page")
         .and_then(|v| v.parse::<u32>().ok())
@@ -19,29 +22,34 @@ pub async fn index(req: HttpRequest, app_state: web::Data<AppState>) -> Result<H
     Ok(HttpResponse::Ok().body(t.render().unwrap()))
 }
 
-// /posts/{id}
-pub async fn detail(path: web::Path<String>, app_state: web::Data<AppState>) -> Result<HttpResponse, ServiceError> {
+// GET /posts/{id}
+pub async fn detail(
+    path: web::Path<String>,
+    app_state: web::Data<AppState>,
+) -> Result<HttpResponse, Error> {
     let id = path
         .into_inner()
         .parse::<u64>()
-        .map_err(|_e| ServiceError::BadRequest)?;
+        .map_err(|e| AppError::BadRequest(e.to_string()))?;
     let t = super::service::detail(id, app_state).await;
     Ok(HttpResponse::Ok().body(t.render().unwrap()))
 }
 
-
+// GET /posts_create
 pub async fn create(app_state: web::Data<AppState>) -> impl Responder {
     let t = super::service::create(app_state).await;
     HttpResponse::Ok().body(t.render().unwrap())
 }
 
-
-// /posts/{id}/edit
-pub async fn edit(path: web::Path<String>, app_state: web::Data<AppState>) -> Result<HttpResponse, ServiceError> {
-    let id: u64 = path
+// GET /posts/{id}/edit
+pub async fn edit(
+    path: web::Path<String>,
+    app_state: web::Data<AppState>,
+) -> Result<HttpResponse, Error> {
+    let id = path
         .into_inner()
-        .parse()
-        .map_err(|_e| ServiceError::BadRequest)?;
+        .parse::<u64>()
+        .map_err(|e| AppError::BadRequest(e.to_string()))?;
     let t = super::service::edit(id, app_state).await;
     Ok(HttpResponse::Ok().body(t.render().unwrap()))
 }

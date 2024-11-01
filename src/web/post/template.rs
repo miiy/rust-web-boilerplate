@@ -1,5 +1,5 @@
-use askama::Template;
 use crate::web::post::dto;
+use askama::Template;
 
 #[derive(Template)]
 #[template(path = "post/index.html")]
@@ -37,4 +37,3 @@ pub struct EditTemplate {
     pub keywords: String,
     pub description: String,
 }
-

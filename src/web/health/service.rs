@@ -1,15 +1,15 @@
-use crate::web::errors::ServiceError;
+use crate::web::error::AppError;
 
 pub struct Service;
 
 impl Service {
-    pub async fn health(redis: &redis::Client) -> Result<(), ServiceError> {
+    pub async fn health(redis: &redis::Client) -> Result<(), AppError> {
         let mut con = redis
             .get_multiplexed_async_connection()
             .await
             .map_err(|e| {
                 log::error!("{e}");
-                ServiceError::InternalServerError
+                AppError::InternalServerError
             })?;
 
         let ret = redis::cmd("PING")
@@ -17,7 +17,7 @@ impl Service {
             .await
             .map_err(|e| {
                 log::error!("{e}");
-                ServiceError::InternalServerError
+                AppError::InternalServerError
             })?;
         log::info!("{}", ret);
 

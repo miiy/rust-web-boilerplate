@@ -1,12 +1,17 @@
 use super::handler;
 use actix_web::web;
 
+// GET /users
+// GET /users/{id}
+// POST /users
+// PUT /users/{id}
+// DELETE /users/{id}
 pub fn init_routes(cfg: &mut web::ServiceConfig) {
-    let v1 = web::scope("/v1")
-        .service(handler::list)
-        .service(handler::detail)
-        .service(handler::create)
-        .service(handler::update)
-        .service(handler::delete);
-    cfg.service(v1);
+    cfg.service(
+        web::scope("/v1/users").service(
+            web::resource("/{id}")
+                .route(web::get().to(handler::detail))
+                .route(web::put().to(handler::update)),
+        ),
+    );
 }

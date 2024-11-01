@@ -14,11 +14,11 @@ struct IndexTemplate<'a> {
 #[get("/")]
 async fn index(app_state: web::Data<AppState>) -> impl Responder {
     let app_name = &app_state.app_name;
-    let index = IndexTemplate {
+    let t = IndexTemplate {
         app_name: app_name,
         page_title: "Home",
         keywords: "keywords",
         description: "description",
     };
-    HttpResponse::Ok().body(index.render().unwrap())
+    HttpResponse::Ok().body(t.render().unwrap())
 }

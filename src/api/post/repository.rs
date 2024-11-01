@@ -70,12 +70,12 @@ impl Post {
             .bind(&item.category_id)
             .bind(&item.title)
             .bind(&item.author)
-        .bind(&item.content)
-        .bind(&item.update_time)
-        .bind(&item.id)
-        .execute(pool)
-        .await
-        .map(|x| x.rows_affected())
+            .bind(&item.content)
+            .bind(&item.update_time)
+            .bind(&item.id)
+            .execute(pool)
+            .await
+            .map(|x| x.rows_affected())
     }
 
     pub async fn soft_delete(pool: &MySqlPool, id: u64) -> Result<u64, sqlx::Error> {
@@ -86,19 +86,6 @@ impl Post {
         ",
         )
         .bind(OffsetDateTime::now_utc())
-        .bind(id)
-        .execute(pool)
-        .await
-        .map(|x| x.rows_affected())
-    }
-
-    pub async fn delete(pool: &MySqlPool, id: u64) -> Result<u64, sqlx::Error> {
-        sqlx::query(
-            "
-        DELETE FROM posts
-        WHERE `id`=?
-        ",
-        )
         .bind(id)
         .execute(pool)
         .await

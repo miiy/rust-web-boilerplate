@@ -6,6 +6,7 @@ use time::OffsetDateTime;
 pub struct ListResponse {
     pub lists: Vec<ListResponseItem>,
 }
+
 #[derive(Debug, Serialize)]
 pub struct ListResponseItem {
     pub id: u64,
@@ -67,5 +68,10 @@ pub struct UpdateResponse {
 }
 
 // delete
+// pub struct DeleteResponse;
+// json: null
+//
+// pub struct DeleteResponse{}
+// json: {}
 #[derive(Debug, Serialize)]
 pub struct DeleteResponse {}
