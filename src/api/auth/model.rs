@@ -9,6 +9,7 @@ pub struct User {
     pub id: u64,
     pub name: String,
     pub email: String,
+    pub password: String,
     pub create_time: Option<OffsetDateTime>,
     pub update_time: Option<OffsetDateTime>,
 }

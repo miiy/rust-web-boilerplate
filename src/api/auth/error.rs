@@ -15,6 +15,8 @@ pub enum AuthError {
     Redis { source: RedisError },
     #[display("post not found")]
     NotFound,
+    #[display("user exists")]
+    UserExists,
 }
 
 impl AuthError {
@@ -25,6 +27,7 @@ impl AuthError {
             Self::Database { .. } => 10003,
             Self::Redis { .. } => 10004,
             Self::NotFound => 10005,
+            Self::UserExists => 10006,
         }
     }
 }
@@ -58,7 +61,7 @@ impl From<AuthError> for APIError {
             message: from.to_string(),
         };
         match from {
-            AuthError::Params(_) => APIError::BadRequest(e),
+            AuthError::Params(_) | AuthError::UserExists => APIError::BadRequest(e),
             AuthError::Service(_) | AuthError::Database { .. } | AuthError::Redis { .. } => {
                 APIError::InternalError(e)
             }

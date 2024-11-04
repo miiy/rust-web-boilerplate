@@ -1,5 +1,33 @@
 {% extends "layout/base.html" %}
 
 {% block content %}
-  register
+  <div id="app">${ message }</div>
+  <form>
+    <div>
+      <label for="name">name</label>
+      <input id="name" v-model="form.name" required>
+    </div>
+    <div>
+      <label for="password" value="Password">password</label>
+      <input id="password" type="password" v-model="form.password" required>
+    </div>
+  </form>
 {% endblock content %}
+
+
+{% block script %}
+<script>
+  const { createApp, ref } = Vue
+
+  const app = createApp({
+    setup() {
+      const message = ref('register')
+      return {
+        message
+      }
+    }
+  })
+  app.config.compilerOptions.delimiters = ['${', '}']
+  app.mount('#app')
+</script>
+{% endblock %}

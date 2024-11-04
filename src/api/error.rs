@@ -11,8 +11,17 @@ pub enum APIError {
     #[display("Unauthorized")]
     Unauthorized(ErrorEntity),
 
+    #[display("Payment Required")]
+    PaymentRequired(ErrorEntity),
+
+    #[display("Forbidden")]
+    Forbidden(ErrorEntity),
+
     #[display("Not Found")]
     NotFound(ErrorEntity),
+
+    #[display("Too Many Requests")]
+    TooManyRequests(ErrorEntity),
 
     #[display("Internal Server Error")]
     InternalError(ErrorEntity),
@@ -38,7 +47,10 @@ impl error::ResponseError for APIError {
         match self {
             Self::BadRequest(_) => StatusCode::BAD_REQUEST,
             Self::Unauthorized(_) => StatusCode::UNAUTHORIZED,
+            Self::PaymentRequired(_) => StatusCode::PAYMENT_REQUIRED,
+            Self::Forbidden(_) => StatusCode::FORBIDDEN,
             Self::NotFound(_) => StatusCode::NOT_FOUND,
+            Self::TooManyRequests(_) => StatusCode::TOO_MANY_REQUESTS,
             Self::InternalError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Self::GatewayTimeout(_) => StatusCode::GATEWAY_TIMEOUT,
         }
@@ -54,9 +66,21 @@ impl error::ResponseError for APIError {
                 log::error!("Unauthorized: {}", e.to_string());
                 HttpResponse::Unauthorized().json(ErrorResponse { error: e.clone() })
             }
+            Self::PaymentRequired(e) => {
+                log::error!("Payment Required: {}", e.to_string());
+                HttpResponse::PaymentRequired().json(ErrorResponse { error: e.clone() })
+            }
+            Self::Forbidden(e) => {
+                log::error!("Forbidden: {}", e.to_string());
+                HttpResponse::Forbidden().json(ErrorResponse { error: e.clone() })
+            }
             Self::NotFound(e) => {
                 log::error!("Not Found: {}", e.to_string());
                 HttpResponse::NotFound().json(ErrorResponse { error: e.clone() })
+            }
+            Self::TooManyRequests(e) => {
+                log::error!("Too Many Requests: {}", e.to_string());
+                HttpResponse::TooManyRequests().json(ErrorResponse { error: e.clone() })
             }
             Self::InternalError(e) => {
                 log::error!("Internal Server Error: {}", e.to_string());
