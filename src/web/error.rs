@@ -53,7 +53,9 @@ impl error::ResponseError for AppError {
             AppError::InternalServerError => {
                 HttpResponse::InternalServerError().body(self.to_string())
             }
-            AppError::ServiceUnavailable => HttpResponse::ServiceUnavailable().body(self.to_string()),
+            AppError::ServiceUnavailable => {
+                HttpResponse::ServiceUnavailable().body(self.to_string())
+            }
         }
     }
 }

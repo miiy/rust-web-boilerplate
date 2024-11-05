@@ -12,9 +12,7 @@ impl Service {
         page_size: u32,
         pool: &MySqlPool,
     ) -> Result<dto::ListResponse, PostError> {
-        let posts_result = Post::find_all(&pool, page, page_size)
-            .await
-            .map_err(|e| PostError::from(e))?;
+        let posts_result = Post::find_all(&pool, page, page_size).await?;
 
         let post_items: Vec<dto::ListResponseItem> = posts_result
             .into_iter()
@@ -37,9 +35,7 @@ impl Service {
     }
 
     pub async fn detail(id: u64, pool: &MySqlPool) -> Result<dto::DetailResponse, PostError> {
-        let post_option = Post::find(&pool, id)
-            .await
-            .map_err(|e| PostError::from(e))?;
+        let post_option = Post::find(&pool, id).await?;
 
         if let Some(post) = post_option {
             let resp = dto::DetailResponse {
@@ -74,9 +70,7 @@ impl Service {
             create_time: Some(OffsetDateTime::now_utc()),
             update_time: Some(OffsetDateTime::now_utc()),
         };
-        let post_id = Post::create(&pool, &post)
-            .await
-            .map_err(|e| PostError::from(e))?;
+        let post_id = Post::create(&pool, &post).await?;
 
         let resp = dto::CreateResponse { id: post_id };
         Ok(resp)
@@ -96,17 +90,13 @@ impl Service {
             create_time: None,
             update_time: Some(OffsetDateTime::now_utc()),
         };
-        let post_id = Post::update(&pool, &post)
-            .await
-            .map_err(|e| PostError::from(e))?;
+        let post_id = Post::update(&pool, &post).await?;
 
         Ok(dto::UpdateResponse { id: post_id })
     }
 
     pub async fn delete(id: u64, pool: &MySqlPool) -> Result<dto::DeleteResponse, PostError> {
-        let _rf = Post::soft_delete(&pool, id)
-            .await
-            .map_err(|e| PostError::from(e))?;
+        let _rf = Post::soft_delete(&pool, id).await?;
         Ok(dto::DeleteResponse {})
     }
 }

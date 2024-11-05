@@ -15,20 +15,4 @@ impl User {
         .await?;
         Ok(item)
     }
-
-    pub async fn update(pool: &MySqlPool, user: &User) -> Result<u64, sqlx::Error> {
-        sqlx::query(
-            "
-        UPDATE users SET `name` = ?, `email` = ?, `update_time` = ?
-        WHERE `id`=?
-        ",
-        )
-        .bind(&user.name)
-        .bind(&user.email)
-        .bind(&user.update_time)
-        .bind(&user.id)
-        .execute(pool)
-        .await
-        .map(|x| x.rows_affected())
-    }
 }

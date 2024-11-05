@@ -4,31 +4,104 @@ Rust web boilerplate with Actix Web, SQLx, redis-rs, Askama
 
 ## Features
 
+- Modular design
+- Http server: [Actix Web](https://github.com/actix/actix-web)
+- Time: [time-rs](https://github.com/time-rs/time)
+- Database: MySQL [SQLx](https://github.com/launchbadge/sqlx) 
+- Cache: Redis [redis-rs](https://github.com/redis-rs/redis-rs)
+- Json: [serde](https://github.com/serde-rs/serde)
+- Config: [config-rs](https://github.com/rust-cli/config-rs)
 - CORS
+- Static files
+- Template engine: [Askama](https://github.com/djc/askama)
 
-- static files
+## Project structure
 
-- MySQL
+The project adopts a modular architectural design.
 
-- Redis
+```text
+├── config        // app config files
+├── docs          // documents
+├── migrations    // database migrations files
+├── src
+│ ├── api         // api modules
+│ │ ├── user      // user module
+│ │ ├── post      // post module
+│ │ ├── error.rs  // api error
+│ │ ├── mod.rs
+│ │ └── routes.rs // api routes
+│ ├── middleware  // actix middleware
+│ ├── web         // web modules
+│ │ ├── auth      // auth module
+│ │ ├── index     // index module
+│ │ ├── error.rs  // web error
+│ │ ├── mod.rs
+│ │ └── routes.rs // web routes
+│ ├── lib.rs
+│ ├── main.rs
+│ ├── config.rs   // app config
+│ └── db.rs
+├── static
+├── templates
+├── Cargo.toml
+├── Cargo.lock
+├── LICENSE
+└── README.md
+```
 
-- Askama
+API module structure
 
-- time
+```text
+├── src
+│ ├── api
+│ │ ├── post            // module name
+│ │ │ ├── error.rs      // error
+│ │ │ ├── handler.rs    // handler
+│ │ │ ├── service.rs    // service logic
+│ │ │ ├── mod.rs
+│ │ │ ├── routes.rs     // module routes
+│ │ │ ├── repository.rs // repository
+│ │ │ ├── dto.rs        // request and response struct
+│ │ │ └── model.rs      // model
+```
 
-Actix Web: <https://github.com/actix/actix-web>
+WEB module structure
 
-SQLx: <https://github.com/launchbadge/sqlx>
+```text
+├── src
+│ ├── web
+│ │ ├── post
+│ │ │ ├── handler.rs  // handler
+│ │ │ ├── service.rs  // service
+│ │ │ ├── mod.rs
+│ │ │ ├── routes.rs   // module routes
+│ │ │ ├── dto.rs      // data transfer object
+│ │ │ ├── template.rs // askama templates files
+```
 
-redis-rs: <https://github.com/redis-rs/redis-rs>
+## Modules
 
-Askama: <https://github.com/djc/askama>
+API 
 
-serde: <https://github.com/serde-rs/serde>
+```text
+Auth: register, login
 
-time: <https://github.com/time-rs/time>
+User: me
 
-config-rs: <https://github.com/rust-cli/config-rs>
+Post: create, update, delete, detail, list
+```
+
+WEB
+
+```text
+Index
+
+Health
+
+Auth
+
+Post
+```
 
 ## Getting Started
 

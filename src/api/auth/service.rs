@@ -1,9 +1,9 @@
-use super::dto::{RegisterRequest, RegisterResponse, LoginRequest, LoginResponse};
-use super::model::User;
+use super::dto::{LoginRequest, LoginResponse, RegisterRequest, RegisterResponse};
 use super::error::AuthError;
+use super::model::User;
+use super::password;
 use sqlx::MySqlPool;
 use time::OffsetDateTime;
-use bcrypt;
 
 pub struct Service;
 
@@ -12,17 +12,17 @@ impl Service {
         req: RegisterRequest,
         pool: &MySqlPool,
     ) -> Result<RegisterResponse, AuthError> {
-        if req.password != req.password_confirmation {
-            AuthError::Params("password error".to_string());
+        Self::validate_register(&req)?;
+
+        if !User::check_name_available(pool, &req.name).await? {
+            return Err(AuthError::UsernameAlreadyExists);
         }
 
-        let exists = User::email_exists(pool, &req.email).await.map_err(|e| AuthError::from(e))?;
-        if exists {
-            return Err(AuthError::UserExists)
+        if !User::check_email_available(pool, &req.email).await? {
+            return Err(AuthError::EmailAlreadyExists);
         }
 
-        let hashed = bcrypt::hash(&req.password, bcrypt::DEFAULT_COST).unwrap();
-
+        let hashed = password::bcrypt_hash(&req.password)?;
         let user = User {
             id: 0,
             name: req.name,
@@ -31,33 +31,43 @@ impl Service {
             create_time: Some(OffsetDateTime::now_utc()),
             update_time: Some(OffsetDateTime::now_utc()),
         };
-        let user_id = User::create(&pool, &user)
-            .await
-            .map_err(|e| AuthError::from(e))?;
+        let user_id = User::create(&pool, &user).await?;
 
         let resp = RegisterResponse { id: user_id };
         Ok(resp)
     }
 
-    pub async fn login(
-        req: LoginRequest,
-        pool: &MySqlPool,
-    ) -> Result<LoginResponse, AuthError> {
-        let user_potion = User::find_by_name(&pool, req.name)
-            .await
-            .map_err(|e| AuthError::from(e))?;
-        if let Some(user) = user_potion {
-            let valid = bcrypt::verify(req.password, &user.password).unwrap();
-            if !valid {
-                return Err(AuthError::Params("wrong password".to_string()));
-            }
-            let resp = LoginResponse {
-                id: user.id,
-                token: "".to_string(),
-            };
-            Ok(resp)
-        } else {
-            Err(AuthError::NotFound)
+    fn validate_register(req: &RegisterRequest) -> Result<(), AuthError> {
+        if req.name.is_empty()
+            || req.email.is_empty()
+            || req.password.is_empty()
+            || req.password_confirmation.is_empty()
+        {
+            return Err(AuthError::InvalidArgument("".to_string()));
         }
+        if !req.password.eq(&req.password_confirmation) {
+            return Err(AuthError::PasswordDiffer);
+        }
+        Ok(())
+    }
+
+    pub async fn login(req: LoginRequest, pool: &MySqlPool) -> Result<LoginResponse, AuthError> {
+        Self::validate_login(&req)?;
+
+        let user_potion = User::find_by_name(&pool, req.name).await?;
+        if let Some(user) = user_potion {
+            if !password::bcrypt_verify(&req.password, &user.password)? {
+                return Err(AuthError::WrongPassword);
+            }
+            return Ok(LoginResponse { id: user.id });
+        }
+        Err(AuthError::WrongPassword)
+    }
+
+    fn validate_login(req: &LoginRequest) -> Result<(), AuthError> {
+        if req.name.is_empty() || req.password.is_empty() {
+            return Err(AuthError::InvalidArgument("".to_string()));
+        }
+        Ok(())
     }
 }

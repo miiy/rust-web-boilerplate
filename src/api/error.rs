@@ -20,6 +20,9 @@ pub enum APIError {
     #[display("Not Found")]
     NotFound(ErrorEntity),
 
+    #[display("Conflict")]
+    CONFLICT(ErrorEntity),
+
     #[display("Too Many Requests")]
     TooManyRequests(ErrorEntity),
 
@@ -50,6 +53,7 @@ impl error::ResponseError for APIError {
             Self::PaymentRequired(_) => StatusCode::PAYMENT_REQUIRED,
             Self::Forbidden(_) => StatusCode::FORBIDDEN,
             Self::NotFound(_) => StatusCode::NOT_FOUND,
+            Self::CONFLICT(_) => StatusCode::CONFLICT,
             Self::TooManyRequests(_) => StatusCode::TOO_MANY_REQUESTS,
             Self::InternalError(_) => StatusCode::INTERNAL_SERVER_ERROR,
             Self::GatewayTimeout(_) => StatusCode::GATEWAY_TIMEOUT,
@@ -77,6 +81,10 @@ impl error::ResponseError for APIError {
             Self::NotFound(e) => {
                 log::error!("Not Found: {}", e.to_string());
                 HttpResponse::NotFound().json(ErrorResponse { error: e.clone() })
+            }
+            Self::CONFLICT(e) => {
+                log::error!("Conflict: {}", e.to_string());
+                HttpResponse::Conflict().json(ErrorResponse { error: e.clone() })
             }
             Self::TooManyRequests(e) => {
                 log::error!("Too Many Requests: {}", e.to_string());

@@ -1,33 +1,48 @@
 use crate::api::error::{APIError, ErrorEntity};
+use bcrypt::BcryptError;
 use derive_more::Display;
 use redis::RedisError;
 use std::error::Error;
 
 #[derive(Debug, Display)]
 pub enum AuthError {
-    #[display("params error: {_0}")]
-    Params(String),
+    #[display("invalid argument: {_0}")]
+    InvalidArgument(String),
     #[display("service error: {_0}")]
     Service(String),
     #[display("database error: {source}")]
     Database { source: sqlx::Error },
     #[display("redis error: {source}")]
     Redis { source: RedisError },
-    #[display("post not found")]
-    NotFound,
-    #[display("user exists")]
-    UserExists,
+    #[display("bcrypt error: {source}")]
+    Bcrypt { source: BcryptError },
+    #[display("user not found")]
+    UserNotFound,
+    // register
+    #[display("username exists")]
+    UsernameAlreadyExists,
+    #[display("email exists")]
+    EmailAlreadyExists,
+    #[display("password differ")]
+    PasswordDiffer,
+    // login
+    #[display("wrong password")]
+    WrongPassword,
 }
 
 impl AuthError {
     pub fn code(&self) -> i32 {
         match self {
-            Self::Params(_) => 10001,
-            Self::Service(_) => 10002,
-            Self::Database { .. } => 10003,
-            Self::Redis { .. } => 10004,
-            Self::NotFound => 10005,
-            Self::UserExists => 10006,
+            Self::InvalidArgument(_) => 10001,
+            Self::WrongPassword => 10002,
+            Self::Service(_) => 10003,
+            Self::Database { .. } => 10004,
+            Self::Redis { .. } => 10005,
+            Self::Bcrypt { .. } => 10006,
+            Self::UserNotFound => 10007,
+            Self::EmailAlreadyExists => 10008,
+            Self::UsernameAlreadyExists => 10009,
+            Self::PasswordDiffer => 10010,
         }
     }
 }
@@ -37,7 +52,30 @@ impl Error for AuthError {
         match self {
             Self::Database { source: ref e } => Some(e),
             Self::Redis { source: ref e } => Some(e),
+            Self::Bcrypt { source: ref e } => Some(e),
             _ => None,
+        }
+    }
+}
+
+impl From<AuthError> for APIError {
+    fn from(from: AuthError) -> APIError {
+        let e = ErrorEntity {
+            code: from.code(),
+            message: from.to_string(),
+        };
+        match from {
+            AuthError::InvalidArgument(_)
+            | AuthError::PasswordDiffer
+            | AuthError::WrongPassword => APIError::BadRequest(e),
+            AuthError::UsernameAlreadyExists | AuthError::EmailAlreadyExists => {
+                APIError::CONFLICT(e)
+            }
+            AuthError::Service(_)
+            | AuthError::Database { .. }
+            | AuthError::Redis { .. }
+            | AuthError::Bcrypt { .. } => APIError::InternalError(e),
+            AuthError::UserNotFound => APIError::NotFound(e),
         }
     }
 }
@@ -54,18 +92,8 @@ impl From<RedisError> for AuthError {
     }
 }
 
-impl From<AuthError> for APIError {
-    fn from(from: AuthError) -> APIError {
-        let e = ErrorEntity {
-            code: from.code(),
-            message: from.to_string(),
-        };
-        match from {
-            AuthError::Params(_) | AuthError::UserExists => APIError::BadRequest(e),
-            AuthError::Service(_) | AuthError::Database { .. } | AuthError::Redis { .. } => {
-                APIError::InternalError(e)
-            }
-            AuthError::NotFound => APIError::NotFound(e),
-        }
+impl From<BcryptError> for AuthError {
+    fn from(from: BcryptError) -> AuthError {
+        AuthError::Bcrypt { source: from }
     }
 }

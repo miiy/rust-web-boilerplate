@@ -24,5 +24,4 @@ pub struct LoginRequest {
 #[derive(Debug, Serialize)]
 pub struct LoginResponse {
     pub id: u64,
-    pub token: String,
 }
