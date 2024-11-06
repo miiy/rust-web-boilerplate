@@ -23,6 +23,11 @@ async fn main() -> std::io::Result<()> {
     // redis
     let redis = redis::Client::open(c.redis.url.clone()).expect("Failed to open redis");
 
+    // session store
+    let session_store = middleware::session::redis_store(c.redis.url.clone())
+        .await
+        .expect("Failed to open redis");
+
     // actix web
     log::info!("Starting HTTP server at {}", c.server.addrs);
     HttpServer::new(move || {
@@ -33,8 +38,9 @@ async fn main() -> std::io::Result<()> {
         });
 
         App::new()
-            .wrap(middleware::cors::cors())
+            .wrap(middleware::cors::cors(&c.app.url))
             .wrap(Logger::default())
+            .wrap(middleware::session::session(session_store.clone()))
             .app_data(shared_data)
             .app_data(
                 web::JsonConfig::default()

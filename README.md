@@ -2,6 +2,11 @@
 
 Rust web boilerplate with Actix Web, SQLx, redis-rs, Askama
 
+# Required
+
+- MySQL
+- Redis
+
 ## Features
 
 - Modular design
@@ -14,6 +19,7 @@ Rust web boilerplate with Actix Web, SQLx, redis-rs, Askama
 - CORS
 - Static files
 - Template engine: [Askama](https://github.com/djc/askama)
+- Session: [actix-session](https://github.com/actix/actix-extras/tree/master/actix-session)
 
 ## Project structure
 

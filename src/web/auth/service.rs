@@ -1,7 +1,9 @@
-use crate::web::auth::template::{LoginTemplate, RegisterTemplate};
+use super::dto::LoginRequest;
+use super::error::AuthError;
+use super::template::{LoginTemplate, RegisterTemplate};
 use crate::AppState;
+use actix_session::Session;
 use actix_web::web;
-use std::fmt::Error;
 
 pub async fn register(app_state: web::Data<AppState>) -> RegisterTemplate {
     let app_name = &app_state.app_name;
@@ -13,7 +15,7 @@ pub async fn register(app_state: web::Data<AppState>) -> RegisterTemplate {
     }
 }
 
-pub async fn login(app_state: web::Data<AppState>) -> LoginTemplate {
+pub async fn show_login(app_state: web::Data<AppState>) -> LoginTemplate {
     let app_name = &app_state.app_name;
     LoginTemplate {
         app_name: app_name.to_string(),
@@ -23,7 +25,22 @@ pub async fn login(app_state: web::Data<AppState>) -> LoginTemplate {
     }
 }
 
-pub async fn logout(app_state: web::Data<AppState>) -> Result<(), Error> {
-    let _app_name = &app_state.app_name;
+pub async fn login(req: LoginRequest, session: Session) -> Result<(), AuthError> {
+    validate_login(&req)?;
+    let id = 1;
+    session.insert("user_id", &id)?;
+    println!("Logged in user {}", id);
+    Ok(())
+}
+
+fn validate_login(req: &LoginRequest) -> Result<(), AuthError> {
+    if req.name.is_empty() || req.password.is_empty() {
+        return Err(AuthError::InvalidArgument("".to_string()));
+    }
+    Ok(())
+}
+
+pub async fn logout(session: Session) -> Result<(), AuthError> {
+    session.purge();
     Ok(())
 }

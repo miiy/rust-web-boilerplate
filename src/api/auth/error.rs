@@ -59,7 +59,7 @@ impl Error for AuthError {
 }
 
 impl From<AuthError> for APIError {
-    fn from(from: AuthError) -> APIError {
+    fn from(from: AuthError) -> Self {
         let e = ErrorEntity {
             code: from.code(),
             message: from.to_string(),
