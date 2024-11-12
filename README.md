@@ -1,6 +1,6 @@
 # rust-web-boilerplate
 
-Rust web boilerplate with Actix Web, SQLx, redis-rs, Askama
+Rust web boilerplate with Actix Web, SQLx, redis-rs, Tera
 
 # Required
 
@@ -18,7 +18,7 @@ Rust web boilerplate with Actix Web, SQLx, redis-rs, Askama
 - Config: [config-rs](https://github.com/rust-cli/config-rs)
 - CORS
 - Static files
-- Template engine: [Askama](https://github.com/djc/askama)
+- Template engine: [Tera](https://github.com/Keats/tera)
 - Session: [actix-session](https://github.com/actix/actix-extras/tree/master/actix-session)
 
 ## Project structure
@@ -82,7 +82,7 @@ WEB module structure
 │ │ │ ├── mod.rs
 │ │ │ ├── routes.rs   // module routes
 │ │ │ ├── dto.rs      // data transfer object
-│ │ │ ├── template.rs // askama templates files
+│ │ │ ├── template.rs // tera templates files
 ```
 
 ## Modules

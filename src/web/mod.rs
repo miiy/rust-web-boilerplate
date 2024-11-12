@@ -5,4 +5,4 @@ pub mod health;
 pub mod index;
 pub mod post;
 pub mod routes;
-mod manifest;
+mod vite;

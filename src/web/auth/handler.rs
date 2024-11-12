@@ -14,8 +14,15 @@ pub async fn register(app_state: web::Data<AppState>) -> Result<HttpResponse, Er
 
 // GET /login
 pub async fn login(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
-    let t = service::show_login(app_state).await;
-    Ok(HttpResponse::Ok().body(t.render().unwrap()))
+    let tmpl = &app_state.tera;
+    let data = service::show_login().await;
+    let mut ctx = tera::Context::new();
+    ctx.insert("app_name", &data.app_name);
+    ctx.insert("page_title", &data.page_title);
+    ctx.insert("keywords", &data.keywords);
+    ctx.insert("description", &data.description);
+    let html = tmpl.render("auth/login.html", &ctx).unwrap();
+    Ok(HttpResponse::Ok().body(html))
 }
 
 // POST /login

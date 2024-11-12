@@ -1,3 +1,5 @@
+use tera::Tera;
+
 pub mod api;
 pub mod config;
 pub mod db;
@@ -8,4 +10,5 @@ pub struct AppState {
     pub app_name: String,
     pub db: sqlx::MySqlPool,
     pub redis: redis::Client,
+    pub tera: Tera,
 }

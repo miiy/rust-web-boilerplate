@@ -9,8 +9,6 @@ pub struct RegisterTemplate {
     pub description: String,
 }
 
-#[derive(Template)]
-#[template(path = "auth/login.html")]
 pub struct LoginTemplate {
     pub app_name: String,
     pub page_title: String,

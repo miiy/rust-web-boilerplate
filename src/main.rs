@@ -6,6 +6,7 @@ use rust_web::{
     web::routes::config_app,
     AppState,
 };
+use tera::Tera;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -28,6 +29,9 @@ async fn main() -> std::io::Result<()> {
         .await
         .expect("Failed to open redis");
 
+    // template
+    let tera = Tera::new("templates/**/*.html").expect("Parsing error");
+
     // actix web
     log::info!("Starting HTTP server at {}", c.server.addrs);
     HttpServer::new(move || {
@@ -35,6 +39,7 @@ async fn main() -> std::io::Result<()> {
             app_name: c.app.name.clone(),
             db: pool.clone(),
             redis: redis.clone(),
+            tera: tera.clone(),
         });
 
         App::new()
