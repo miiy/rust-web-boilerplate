@@ -1,7 +1,7 @@
-use askama::Template;
+use serde::Serialize;
 
-#[derive(Template)]
-#[template(path = "auth/register.html")]
+#[derive(Serialize)]
+// auth/register.html
 pub struct RegisterTemplate {
     pub app_name: String,
     pub page_title: String,
@@ -9,6 +9,8 @@ pub struct RegisterTemplate {
     pub description: String,
 }
 
+#[derive(Serialize)]
+// auth/login.html
 pub struct LoginTemplate {
     pub app_name: String,
     pub page_title: String,

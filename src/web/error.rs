@@ -1,5 +1,6 @@
 use actix_web::{error, http::StatusCode, HttpResponse};
 use derive_more::derive::Display;
+use std::error::Error;
 
 #[derive(Debug, Display)]
 pub enum AppError {
@@ -22,7 +23,7 @@ pub enum AppError {
     TooManyRequests,
 
     #[display("Internal Server Error")]
-    InternalServerError,
+    InternalServerError { source: Box<dyn Error> },
 
     #[display("Service Unavailable")]
     ServiceUnavailable,
@@ -37,7 +38,7 @@ impl error::ResponseError for AppError {
             AppError::NotFound => StatusCode::NOT_FOUND,
             AppError::PaymentRequired => StatusCode::PAYMENT_REQUIRED,
             AppError::TooManyRequests => StatusCode::TOO_MANY_REQUESTS,
-            AppError::InternalServerError => StatusCode::INTERNAL_SERVER_ERROR,
+            AppError::InternalServerError { .. } => StatusCode::INTERNAL_SERVER_ERROR,
             AppError::ServiceUnavailable => StatusCode::SERVICE_UNAVAILABLE,
         }
     }
@@ -50,12 +51,21 @@ impl error::ResponseError for AppError {
             AppError::NotFound => HttpResponse::NotFound().body(self.to_string()),
             AppError::PaymentRequired => HttpResponse::PaymentRequired().body(self.to_string()),
             AppError::TooManyRequests => HttpResponse::TooManyRequests().body(self.to_string()),
-            AppError::InternalServerError => {
+            AppError::InternalServerError { .. } => {
                 HttpResponse::InternalServerError().body(self.to_string())
             }
             AppError::ServiceUnavailable => {
                 HttpResponse::ServiceUnavailable().body(self.to_string())
             }
+        }
+    }
+}
+
+// tear
+impl From<tera::Error> for AppError {
+    fn from(from: tera::Error) -> Self {
+        AppError::InternalServerError {
+            source: Box::new(from),
         }
     }
 }

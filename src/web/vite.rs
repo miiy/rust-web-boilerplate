@@ -1,6 +1,6 @@
+use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 use std::str::FromStr;
-use serde::{Deserialize, Serialize};
 
 // vite backend integration
 // https://cn.vite.dev/guide/backend-integration.html
@@ -52,9 +52,8 @@ use serde::{Deserialize, Serialize};
 
 type ManifestMap = HashMap<String, ManifestChunk>;
 
-
 struct Manifest {
-    data: ManifestMap
+    data: ManifestMap,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -75,8 +74,8 @@ impl FromStr for Manifest {
     type Err = serde_json::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self{
-            data: serde_json::from_str::<ManifestMap>(s)?
+        Ok(Self {
+            data: serde_json::from_str::<ManifestMap>(s)?,
         })
     }
 }
@@ -98,7 +97,11 @@ fn manifest_chunk<'a>(manifest: &'a ManifestMap, name: &str) -> Option<&'a Manif
 fn imported_chunks(manifest: &ManifestMap, name: &str) -> Vec<ManifestChunk> {
     let mut seen: HashSet<String> = HashSet::new();
 
-    fn get_imported_chunks(chunk: &ManifestChunk, manifest: &ManifestMap, seen: &mut HashSet<String>) -> Vec<ManifestChunk> {
+    fn get_imported_chunks(
+        chunk: &ManifestChunk,
+        manifest: &ManifestMap,
+        seen: &mut HashSet<String>,
+    ) -> Vec<ManifestChunk> {
         let mut chunks: Vec<ManifestChunk> = Vec::new();
         if let Some(imports) = &chunk.imports {
             for file in imports.iter() {
@@ -124,7 +127,6 @@ fn imported_chunks(manifest: &ManifestMap, name: &str) -> Vec<ManifestChunk> {
         None => Vec::new(),
     }
 }
-
 
 #[cfg(test)]
 mod tests {

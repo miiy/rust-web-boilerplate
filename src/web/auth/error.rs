@@ -14,7 +14,9 @@ impl From<AuthError> for AppError {
     fn from(from: AuthError) -> Self {
         match from {
             AuthError::InvalidArgument(msg) => AppError::BadRequest(msg),
-            AuthError::SessionInsertError { .. } => AppError::InternalServerError,
+            AuthError::SessionInsertError { source } => AppError::InternalServerError {
+                source: Box::new(source),
+            },
         }
     }
 }

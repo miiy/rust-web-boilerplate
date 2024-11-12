@@ -7,17 +7,15 @@ impl Service {
         let mut con = redis
             .get_multiplexed_async_connection()
             .await
-            .map_err(|e| {
-                log::error!("{e}");
-                AppError::InternalServerError
+            .map_err(|e| AppError::InternalServerError {
+                source: Box::new(e),
             })?;
 
         let ret = redis::cmd("PING")
             .query_async::<String>(&mut con)
             .await
-            .map_err(|e| {
-                log::error!("{e}");
-                AppError::InternalServerError
+            .map_err(|e| AppError::InternalServerError {
+                source: Box::new(e),
             })?;
         log::info!("{}", ret);
 

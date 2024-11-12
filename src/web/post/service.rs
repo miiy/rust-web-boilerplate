@@ -1,21 +1,17 @@
-use super::template::{CreateTemplate, DetailTemplate, EditTemplate, IndexTemplate};
+use super::dto::{
+    CreateRequest, CreateResponse, DetailRequest, DetailResponse, EditRequest, EditResponse,
+    IndexRequest, IndexResponse,
+};
 use crate::api::post::service::Service;
 use crate::web::error::AppError;
 use crate::web::post::dto;
 use crate::AppState;
-use actix_web::web;
 
-pub async fn index(
-    page: u32,
-    page_size: u32,
-    app_state: web::Data<AppState>,
-) -> Result<IndexTemplate, AppError> {
-    let app_name = &app_state.app_name;
-    let resp = Service::lists(page, page_size, &app_state.db)
+pub async fn index(req: &IndexRequest, app_state: &AppState) -> Result<IndexResponse, AppError> {
+    let resp = Service::lists(req.page, req.page_size, &app_state.db)
         .await
-        .map_err(|e| {
-            log::error!("{e}");
-            AppError::InternalServerError
+        .map_err(|e| AppError::InternalServerError {
+            source: Box::new(e),
         })?;
 
     let lists = resp
@@ -32,41 +28,26 @@ pub async fn index(
         })
         .collect();
 
-    Ok(IndexTemplate {
-        app_name: app_name.to_string(),
-        page_title: "index".to_string(),
-        keywords: "keywords".to_string(),
-        description: "description".to_string(),
+    Ok(IndexResponse {
+        page: req.page,
         lists: lists,
     })
 }
 
-pub async fn detail(_id: u64, app_state: web::Data<AppState>) -> DetailTemplate {
-    let app_name = &app_state.app_name;
-    DetailTemplate {
-        app_name: app_name.to_string(),
-        page_title: "detail".to_string(),
-        keywords: "keywords".to_string(),
-        description: "description".to_string(),
-    }
+pub async fn detail(
+    _req: &DetailRequest,
+    _app_state: &AppState,
+) -> Result<DetailResponse, AppError> {
+    Ok(DetailResponse {})
 }
 
-pub async fn create(app_state: web::Data<AppState>) -> CreateTemplate {
-    let app_name = &app_state.app_name;
-    CreateTemplate {
-        app_name: app_name.to_string(),
-        page_title: "create".to_string(),
-        keywords: "keywords".to_string(),
-        description: "description".to_string(),
-    }
+pub async fn create(
+    _req: &CreateRequest,
+    _app_state: &AppState,
+) -> Result<CreateResponse, AppError> {
+    Ok(CreateResponse {})
 }
 
-pub async fn edit(_id: u64, app_state: web::Data<AppState>) -> EditTemplate {
-    let app_name = &app_state.app_name;
-    EditTemplate {
-        app_name: app_name.to_string(),
-        page_title: "edit".to_string(),
-        keywords: "keywords".to_string(),
-        description: "description".to_string(),
-    }
+pub async fn edit(_req: &EditRequest, _app_state: &AppState) -> Result<EditResponse, AppError> {
+    Ok(EditResponse {})
 }

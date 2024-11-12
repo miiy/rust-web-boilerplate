@@ -1,8 +1,8 @@
 use crate::web::post::dto;
-use askama::Template;
+use serde::Serialize;
 
-#[derive(Template)]
-#[template(path = "post/index.html")]
+// post/index.html
+#[derive(Serialize)]
 pub struct IndexTemplate {
     pub app_name: String,
     pub page_title: String,
@@ -11,8 +11,8 @@ pub struct IndexTemplate {
     pub lists: Vec<dto::Post>,
 }
 
-#[derive(Template)]
-#[template(path = "post/detail.html")]
+// post/detail.html
+#[derive(Serialize)]
 pub struct DetailTemplate {
     pub app_name: String,
     pub page_title: String,
@@ -20,8 +20,8 @@ pub struct DetailTemplate {
     pub description: String,
 }
 
-#[derive(Template)]
-#[template(path = "post/create.html")]
+// post/create.html
+#[derive(Serialize)]
 pub struct CreateTemplate {
     pub app_name: String,
     pub page_title: String,
@@ -29,8 +29,8 @@ pub struct CreateTemplate {
     pub description: String,
 }
 
-#[derive(Template)]
-#[template(path = "post/edit.html")]
+// post/edit.html
+#[derive(Serialize)]
 pub struct EditTemplate {
     pub app_name: String,
     pub page_title: String,

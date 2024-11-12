@@ -1,27 +1,45 @@
 use super::dto;
 use super::service;
+use super::template::LoginTemplate;
+use super::template::RegisterTemplate;
 use crate::web::error::AppError;
 use crate::AppState;
 use actix_session::Session;
 use actix_web::{web, Error, HttpResponse};
-use askama::Template;
 
 // GET /register
 pub async fn register(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
-    let t = service::register(app_state).await;
-    Ok(HttpResponse::Ok().body(t.render().unwrap()))
+    let template = RegisterTemplate {
+        app_name: app_state.app_name.clone(),
+        page_title: "Register".to_string(),
+        keywords: "keywords".to_string(),
+        description: "description".to_string(),
+    };
+    let html = app_state
+        .tera
+        .render(
+            "auth/register.html",
+            &tera::Context::from_serialize(&template).map_err(|e| AppError::from(e))?,
+        )
+        .map_err(|e| AppError::from(e))?;
+    Ok(HttpResponse::Ok().body(html))
 }
 
 // GET /login
 pub async fn login(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
-    let tmpl = &app_state.tera;
-    let data = service::show_login().await;
-    let mut ctx = tera::Context::new();
-    ctx.insert("app_name", &data.app_name);
-    ctx.insert("page_title", &data.page_title);
-    ctx.insert("keywords", &data.keywords);
-    ctx.insert("description", &data.description);
-    let html = tmpl.render("auth/login.html", &ctx).unwrap();
+    let template = LoginTemplate {
+        app_name: app_state.app_name.clone(),
+        page_title: "Register".to_string(),
+        keywords: "keywords".to_string(),
+        description: "description".to_string(),
+    };
+    let html = app_state
+        .tera
+        .render(
+            "auth/login.html",
+            &tera::Context::from_serialize(&template).map_err(|e| AppError::from(e))?,
+        )
+        .map_err(|e| AppError::from(e))?;
     Ok(HttpResponse::Ok().body(html))
 }
 

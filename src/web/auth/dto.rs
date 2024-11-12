@@ -5,3 +5,9 @@ pub struct LoginRequest {
     pub name: String,
     pub password: String,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct LoginResponse {}
+
+#[derive(Debug, Deserialize)]
+pub struct RegisterResponse {}
