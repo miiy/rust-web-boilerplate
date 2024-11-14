@@ -1,3 +1,4 @@
+use config::AppMetaData;
 use tera::Tera;
 
 pub mod api;
@@ -7,7 +8,7 @@ pub mod middleware;
 pub mod web;
 
 pub struct AppState {
-    pub app_name: String,
+    pub metadata: AppMetaData,
     pub db: sqlx::MySqlPool,
     pub redis: redis::Client,
     pub tera: Tera,

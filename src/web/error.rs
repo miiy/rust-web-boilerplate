@@ -28,6 +28,9 @@ pub enum AppError {
     #[display("Internal Server Error")]
     InternalServerError { source: Box<dyn Error> },
 
+    #[display("Service Error")]
+    ServiceError { source: Box<dyn Error> },
+
     #[display("Service Unavailable")]
     ServiceUnavailable,
 }
@@ -41,9 +44,9 @@ impl error::ResponseError for AppError {
             AppError::Forbidden => StatusCode::FORBIDDEN,
             AppError::NotFound => StatusCode::NOT_FOUND,
             AppError::TooManyRequests => StatusCode::TOO_MANY_REQUESTS,
-            AppError::TemplateError { .. } | AppError::InternalServerError { .. } => {
-                StatusCode::INTERNAL_SERVER_ERROR
-            }
+            AppError::TemplateError { .. }
+            | AppError::InternalServerError { .. }
+            | AppError::ServiceError { .. } => StatusCode::INTERNAL_SERVER_ERROR,
             AppError::ServiceUnavailable => StatusCode::SERVICE_UNAVAILABLE,
         }
     }
@@ -56,8 +59,17 @@ impl error::ResponseError for AppError {
             AppError::Forbidden => HttpResponse::Forbidden().body(self.to_string()),
             AppError::NotFound => HttpResponse::NotFound().body(self.to_string()),
             AppError::TooManyRequests => HttpResponse::TooManyRequests().body(self.to_string()),
-            AppError::InternalServerError { .. } | AppError::TemplateError { .. } => {
+            AppError::InternalServerError { source } => {
+                log::error!("Internal Server Error: {}", source);
                 HttpResponse::InternalServerError().body(self.to_string())
+            }
+            AppError::TemplateError { source } => {
+                log::error!("Template Error: {}", source);
+                HttpResponse::InternalServerError().body(self.to_string())
+            }
+            AppError::ServiceError { source } => {
+                log::error!("Service Error: {}", source);
+                HttpResponse::ServiceUnavailable().body(self.to_string())
             }
             AppError::ServiceUnavailable => {
                 HttpResponse::ServiceUnavailable().body(self.to_string())
@@ -69,9 +81,6 @@ impl error::ResponseError for AppError {
 // tear
 impl From<tera::Error> for AppError {
     fn from(from: tera::Error) -> Self {
-        AppError::TemplateError {
-            source: from,
-        }
+        AppError::TemplateError { source: from }
     }
 }
-

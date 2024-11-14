@@ -42,7 +42,7 @@ async fn main() -> std::io::Result<()> {
     log::info!("Starting HTTP server at {}", c.server.addrs);
     HttpServer::new(move || {
         let shared_data = web::Data::new(AppState {
-            app_name: c.app.name.clone(),
+            metadata: c.app.metadata.clone(),
             db: pool.clone(),
             redis: redis.clone(),
             tera: tera.clone(),
@@ -53,6 +53,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(Logger::default())
             .wrap(middleware::session::session(
                 session_store.clone(),
+                c.cookie.name.clone(),
                 secret_key.clone(),
             ))
             .app_data(shared_data)
@@ -61,7 +62,11 @@ async fn main() -> std::io::Result<()> {
                     // register error_handler for JSON extractors.
                     .error_handler(error::json_error_handler),
             )
-            .service(web::scope("").wrap(middleware::error::error_handlers()).configure(config_app))
+            .service(
+                web::scope("")
+                    .wrap(middleware::error::error_handlers())
+                    .configure(config_app),
+            )
             .service(web::scope("/api").configure(config_api))
             .service(fs::Files::new("/static", "./static").use_last_modified(true))
             .service(

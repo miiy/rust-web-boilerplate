@@ -22,7 +22,7 @@ pub async fn list(
         .unwrap_or(20);
     let resp = Service::lists(page, page_size, &app_state.db)
         .await
-        .map_err(|e| APIError::from(e))?;
+        .map_err(APIError::from)?;
 
     Ok(HttpResponse::Ok().json(resp))
 }
@@ -38,7 +38,7 @@ pub async fn detail(
         .map_err(|e| APIError::from(PostError::Params(e.to_string())))?;
     let resp = Service::detail(id, &app_state.db)
         .await
-        .map_err(|e| APIError::from(e))?;
+        .map_err(APIError::from)?;
     Ok(HttpResponse::Ok().json(resp))
 }
 
@@ -49,7 +49,7 @@ pub async fn create(
 ) -> Result<HttpResponse, actix_web::Error> {
     let resp = Service::create(params.into_inner(), &app_state.db)
         .await
-        .map_err(|e| APIError::from(e))?;
+        .map_err(APIError::from)?;
     Ok(HttpResponse::Created().json(resp))
 }
 
@@ -65,7 +65,7 @@ pub async fn update(
         .map_err(|e| APIError::from(PostError::Params(e.to_string())))?;
     let resp = Service::update(id, params.into_inner(), &app_state.db)
         .await
-        .map_err(|e| APIError::from(e))?;
+        .map_err(APIError::from)?;
     Ok(HttpResponse::Ok().json(resp))
 }
 
@@ -80,6 +80,6 @@ pub async fn delete(
         .map_err(|e| APIError::from(PostError::Params(e.to_string())))?;
     let resp = Service::delete(id, &app_state.db)
         .await
-        .map_err(|e| APIError::from(e))?;
+        .map_err(APIError::from)?;
     Ok(HttpResponse::Ok().json(resp))
 }

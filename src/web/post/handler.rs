@@ -1,10 +1,10 @@
+use super::dto::*;
+use super::template::*;
 use crate::web::error::AppError;
+use crate::web::template;
 use crate::AppState;
 use actix_web::{web, Error, HttpRequest, HttpResponse};
 use std::collections::HashMap;
-
-use super::dto::{CreateRequest, DetailRequest, EditRequest, IndexRequest};
-use super::template::{CreateTemplate, DetailTemplate, EditTemplate, IndexTemplate};
 
 // GET /posts
 pub async fn index(
@@ -28,19 +28,12 @@ pub async fn index(
     let resp = super::service::index(&req, &app_state).await?;
 
     let template = IndexTemplate {
-        app_name: app_state.app_name.clone(),
         page_title: "Home".to_string(),
         keywords: "keywords".to_string(),
         description: "description".to_string(),
         lists: resp.lists,
     };
-    let html = app_state
-        .tera
-        .render(
-            "post/index.html",
-            &tera::Context::from_serialize(&template).map_err(|e| AppError::from(e))?,
-        )
-        .map_err(|e| AppError::from(e))?;
+    let html = template::render("post/index.html", &template, &app_state)?;
     Ok(HttpResponse::Ok().body(html))
 }
 
@@ -56,18 +49,11 @@ pub async fn detail(
     let req = DetailRequest { id: id };
     let _resp = super::service::detail(&req, &app_state).await?;
     let template = DetailTemplate {
-        app_name: app_state.app_name.clone(),
         page_title: "Home".to_string(),
         keywords: "keywords".to_string(),
         description: "description".to_string(),
     };
-    let html = app_state
-        .tera
-        .render(
-            "index/detail.html",
-            &tera::Context::from_serialize(&template).map_err(|e| AppError::from(e))?,
-        )
-        .map_err(|e| AppError::from(e))?;
+    let html = template::render("post/detail.html", &template, &app_state)?;
     Ok(HttpResponse::Ok().body(html))
 }
 
@@ -77,18 +63,11 @@ pub async fn create(app_state: web::Data<AppState>) -> Result<HttpResponse, Erro
     let _resp = super::service::create(&req, &app_state).await?;
 
     let template = CreateTemplate {
-        app_name: app_state.app_name.clone(),
         page_title: "create".to_string(),
         keywords: "keywords".to_string(),
         description: "description".to_string(),
     };
-    let html = app_state
-        .tera
-        .render(
-            "post/create.html",
-            &tera::Context::from_serialize(&template).map_err(|e| AppError::from(e))?,
-        )
-        .map_err(|e| AppError::from(e))?;
+    let html = template::render("post/create.html", &template, &app_state)?;
     Ok(HttpResponse::Ok().body(html))
 }
 
@@ -106,17 +85,10 @@ pub async fn edit(
     let _resp = super::service::edit(&req, &app_state).await;
 
     let template = EditTemplate {
-        app_name: app_state.app_name.clone(),
         page_title: "edit".to_string(),
         keywords: "keywords".to_string(),
         description: "description".to_string(),
     };
-    let html = app_state
-        .tera
-        .render(
-            "post/edit.html",
-            &tera::Context::from_serialize(&template).map_err(|e| AppError::from(e))?,
-        )
-        .map_err(|e| AppError::from(e))?;
+    let html = template::render("post/edit.html", &template, &app_state)?;
     Ok(HttpResponse::Ok().body(html))
 }

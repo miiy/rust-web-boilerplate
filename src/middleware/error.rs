@@ -1,3 +1,4 @@
+use crate::AppState;
 use actix_web::{
     body::BoxBody,
     dev::ServiceResponse,
@@ -5,7 +6,6 @@ use actix_web::{
     middleware::{ErrorHandlerResponse, ErrorHandlers},
     web, HttpResponse, Result,
 };
-use crate::AppState;
 
 // Custom error handlers, to return HTML responses when an error occurs.
 pub fn error_handlers() -> ErrorHandlers<BoxBody> {
@@ -34,7 +34,9 @@ fn get_error_response<B>(res: &ServiceResponse<B>, error: &str) -> HttpResponse 
     };
 
     // let tera = request.app_data::<web::Data<Tera>>().map(|t| t.get_ref());
-    let app_state = request.app_data::<web::Data<AppState>>().map(|t| t.get_ref());
+    let app_state = request
+        .app_data::<web::Data<AppState>>()
+        .map(|t| t.get_ref());
     let tera = match app_state {
         Some(app_state) => Some(&app_state.tera),
         None => return fallback(error),

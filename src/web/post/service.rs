@@ -1,10 +1,6 @@
-use super::dto::{
-    CreateRequest, CreateResponse, DetailRequest, DetailResponse, EditRequest, EditResponse,
-    IndexRequest, IndexResponse,
-};
+use super::dto::*;
 use crate::api::post::service::Service;
 use crate::web::error::AppError;
-use crate::web::post::dto;
 use crate::AppState;
 
 pub async fn index(req: &IndexRequest, app_state: &AppState) -> Result<IndexResponse, AppError> {
@@ -17,7 +13,7 @@ pub async fn index(req: &IndexRequest, app_state: &AppState) -> Result<IndexResp
     let lists = resp
         .lists
         .into_iter()
-        .map(|item| dto::Post {
+        .map(|item| Post {
             id: item.id,
             category_id: item.category_id,
             title: item.title,
@@ -34,11 +30,24 @@ pub async fn index(req: &IndexRequest, app_state: &AppState) -> Result<IndexResp
     })
 }
 
-pub async fn detail(
-    _req: &DetailRequest,
-    _app_state: &AppState,
-) -> Result<DetailResponse, AppError> {
-    Ok(DetailResponse {})
+pub async fn detail(req: &DetailRequest, app_state: &AppState) -> Result<DetailResponse, AppError> {
+    let resp =
+        Service::detail(req.id, &app_state.db)
+            .await
+            .map_err(|e| AppError::ServiceError {
+                source: Box::new(e),
+            })?;
+    Ok(DetailResponse {
+        post: Post {
+            id: resp.id,
+            category_id: resp.category_id,
+            title: resp.title,
+            author: resp.author,
+            content: resp.content,
+            create_time: resp.create_time.date().to_string(),
+            update_time: resp.update_time.date().to_string(),
+        },
+    })
 }
 
 pub async fn create(
@@ -48,6 +57,9 @@ pub async fn create(
     Ok(CreateResponse {})
 }
 
-pub async fn edit(_req: &EditRequest, _app_state: &AppState) -> Result<EditResponse, AppError> {
-    Ok(EditResponse {})
+pub async fn edit(req: &EditRequest, app_state: &AppState) -> Result<EditResponse, AppError> {
+    let detail_resp = detail(&DetailRequest { id: req.id }, app_state).await?;
+    Ok(EditResponse {
+        post: detail_resp.post,
+    })
 }

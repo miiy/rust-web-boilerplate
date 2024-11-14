@@ -1,7 +1,13 @@
 [app]
 name = "Actix Web"
-key = ""
+key = "your-secret-key" # Should be a strong random key
 url = "http://127.0.0.1:8080"
+debug = false
+
+[app.metadata]
+title = "Actix Web Application"
+keywords = "rust, actix, web, api"
+description = "A powerful web application built with Actix Web framework"
 
 [server]
 addrs = "127.0.0.1:8080"
@@ -13,4 +19,5 @@ url = "mysql://root:123456@127.0.0.1:3306/rust_web"
 url = "redis://127.0.0.1:6379"
 
 [cookie]
+name = "SESSIONID"
 secret_key = "dpp7QFH3QR41Ims6mIjdTysAtkM9bOoN3gJAaF0X5HqbKdGdVhWQcdMcJTtqjpUAL4EolObWxhG9s8uN2e32vA=="

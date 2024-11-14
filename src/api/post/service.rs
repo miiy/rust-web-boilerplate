@@ -1,6 +1,6 @@
+use super::dto::*;
+use super::error::PostError;
 use super::model::Post;
-use super::{dto, error};
-use error::PostError;
 use sqlx::MySqlPool;
 use time::OffsetDateTime;
 
@@ -11,12 +11,12 @@ impl Service {
         page: u32,
         page_size: u32,
         pool: &MySqlPool,
-    ) -> Result<dto::ListResponse, PostError> {
+    ) -> Result<ListResponse, PostError> {
         let posts_result = Post::find_all(&pool, page, page_size).await?;
 
-        let post_items: Vec<dto::ListResponseItem> = posts_result
+        let post_items: Vec<ListResponseItem> = posts_result
             .into_iter()
-            .map(|post| dto::ListResponseItem {
+            .map(|post| ListResponseItem {
                 id: post.id,
                 category_id: post.category_id,
                 title: post.title,
@@ -31,14 +31,14 @@ impl Service {
             })
             .collect();
 
-        Ok(dto::ListResponse { lists: post_items })
+        Ok(ListResponse { lists: post_items })
     }
 
-    pub async fn detail(id: u64, pool: &MySqlPool) -> Result<dto::DetailResponse, PostError> {
+    pub async fn detail(id: u64, pool: &MySqlPool) -> Result<DetailResponse, PostError> {
         let post_option = Post::find(&pool, id).await?;
 
         if let Some(post) = post_option {
-            let resp = dto::DetailResponse {
+            let resp = DetailResponse {
                 id: post.id,
                 category_id: post.category_id,
                 title: post.title,
@@ -57,10 +57,7 @@ impl Service {
         }
     }
 
-    pub async fn create(
-        req: dto::CreateRequest,
-        pool: &MySqlPool,
-    ) -> Result<dto::CreateResponse, PostError> {
+    pub async fn create(req: CreateRequest, pool: &MySqlPool) -> Result<CreateResponse, PostError> {
         let post = Post {
             id: 0,
             category_id: req.category_id,
@@ -72,15 +69,15 @@ impl Service {
         };
         let post_id = Post::create(&pool, &post).await?;
 
-        let resp = dto::CreateResponse { id: post_id };
+        let resp = CreateResponse { id: post_id };
         Ok(resp)
     }
 
     pub async fn update(
         id: u64,
-        req: dto::UpdateRequest,
+        req: UpdateRequest,
         pool: &MySqlPool,
-    ) -> Result<dto::UpdateResponse, PostError> {
+    ) -> Result<UpdateResponse, PostError> {
         let post = Post {
             id: id,
             category_id: req.category_id,
@@ -92,11 +89,11 @@ impl Service {
         };
         let post_id = Post::update(&pool, &post).await?;
 
-        Ok(dto::UpdateResponse { id: post_id })
+        Ok(UpdateResponse { id: post_id })
     }
 
-    pub async fn delete(id: u64, pool: &MySqlPool) -> Result<dto::DeleteResponse, PostError> {
+    pub async fn delete(id: u64, pool: &MySqlPool) -> Result<DeleteResponse, PostError> {
         let _rf = Post::soft_delete(&pool, id).await?;
-        Ok(dto::DeleteResponse {})
+        Ok(DeleteResponse {})
     }
 }

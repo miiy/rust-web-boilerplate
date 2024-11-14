@@ -8,6 +8,6 @@ pub async fn me(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let id = 1;
     let resp = Service::detail(id, &app_state.db)
         .await
-        .map_err(|e| APIError::from(e))?;
+        .map_err(APIError::from)?;
     Ok(HttpResponse::Ok().json(resp))
 }

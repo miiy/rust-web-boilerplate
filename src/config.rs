@@ -1,5 +1,5 @@
 use config::{ConfigError, File};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::env;
 
 #[derive(Debug, Deserialize)]
@@ -17,6 +17,14 @@ pub struct App {
     pub url: String,
     pub key: String,
     pub debug: bool,
+    pub metadata: AppMetaData,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AppMetaData {
+    pub title: String,
+    pub keywords: String,
+    pub description: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -36,6 +44,7 @@ pub struct Redis {
 
 #[derive(Debug, Deserialize)]
 pub struct Cookie {
+    pub name: String,
     pub secret_key: String,
 }
 

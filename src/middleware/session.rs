@@ -5,12 +5,12 @@ use base64::prelude::*;
 use std::error::Error;
 use std::str::FromStr;
 
-pub fn session<T>(store: T, secret_key: SecretKey) -> SessionMiddleware<T>
+pub fn session<T>(store: T, cookie_name: String, secret_key: SecretKey) -> SessionMiddleware<T>
 where
     T: SessionStore + Clone,
 {
     SessionMiddleware::builder(store.clone(), secret_key.key())
-        .cookie_name("SESSIONID".to_string())
+        .cookie_name(cookie_name)
         .build()
 }
 

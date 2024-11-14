@@ -29,7 +29,9 @@ pub struct DetailRequest {
 }
 
 #[derive(Debug, Serialize)]
-pub struct DetailResponse {}
+pub struct DetailResponse {
+    pub post: Post,
+}
 
 #[derive(Debug, Deserialize)]
 pub struct CreateRequest {}
@@ -43,4 +45,6 @@ pub struct EditRequest {
 }
 
 #[derive(Debug, Serialize)]
-pub struct EditResponse {}
+pub struct EditResponse {
+    pub post: Post,
+}

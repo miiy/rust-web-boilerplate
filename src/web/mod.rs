@@ -1,8 +1,9 @@
-pub mod about;
+mod about;
 mod auth;
-pub mod error;
+mod error;
 pub mod health;
 pub mod index;
 pub mod post;
 pub mod route;
+pub mod template;
 mod vite;

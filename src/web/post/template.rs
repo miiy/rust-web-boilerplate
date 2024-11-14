@@ -4,7 +4,6 @@ use serde::Serialize;
 // post/index.html
 #[derive(Serialize)]
 pub struct IndexTemplate {
-    pub app_name: String,
     pub page_title: String,
     pub keywords: String,
     pub description: String,
@@ -14,7 +13,6 @@ pub struct IndexTemplate {
 // post/detail.html
 #[derive(Serialize)]
 pub struct DetailTemplate {
-    pub app_name: String,
     pub page_title: String,
     pub keywords: String,
     pub description: String,
@@ -23,7 +21,6 @@ pub struct DetailTemplate {
 // post/create.html
 #[derive(Serialize)]
 pub struct CreateTemplate {
-    pub app_name: String,
     pub page_title: String,
     pub keywords: String,
     pub description: String,
@@ -32,7 +29,6 @@ pub struct CreateTemplate {
 // post/edit.html
 #[derive(Serialize)]
 pub struct EditTemplate {
-    pub app_name: String,
     pub page_title: String,
     pub keywords: String,
     pub description: String,

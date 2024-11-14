@@ -11,7 +11,7 @@ pub async fn register(
 ) -> Result<HttpResponse, Error> {
     let resp = Service::register(params.into_inner(), &app_state.db)
         .await
-        .map_err(|e| APIError::from(e))?;
+        .map_err(APIError::from)?;
     Ok(HttpResponse::Created().json(resp))
 }
 
@@ -22,6 +22,6 @@ pub async fn login(
 ) -> Result<HttpResponse, Error> {
     let resp = Service::login(params.into_inner(), &app_state.db)
         .await
-        .map_err(|e| APIError::from(e))?;
+        .map_err(APIError::from)?;
     Ok(HttpResponse::Ok().json(resp))
 }
