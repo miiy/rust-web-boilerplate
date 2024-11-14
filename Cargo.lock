@@ -2130,6 +2130,7 @@ dependencies = [
  "actix-files",
  "actix-session",
  "actix-web",
+ "base64 0.22.1",
  "bcrypt",
  "config",
  "derive_more 1.0.0",

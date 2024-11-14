@@ -12,3 +12,5 @@ url = "mysql://root:123456@127.0.0.1:3306/rust_web"
 [redis]
 url = "redis://127.0.0.1:6379"
 
+[cookie]
+secret_key = "dpp7QFH3QR41Ims6mIjdTysAtkM9bOoN3gJAaF0X5HqbKdGdVhWQcdMcJTtqjpUAL4EolObWxhG9s8uN2e32vA=="

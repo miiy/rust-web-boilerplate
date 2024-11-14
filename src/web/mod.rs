@@ -4,5 +4,5 @@ pub mod error;
 pub mod health;
 pub mod index;
 pub mod post;
-pub mod routes;
+pub mod route;
 mod vite;

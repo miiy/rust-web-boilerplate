@@ -1,11 +1,13 @@
 use actix_files as fs;
-use actix_web::{middleware::Logger, web, App, HttpServer};
+use actix_web::middleware::Logger;
+use actix_web::{web, App, HttpServer};
 use rust_web::{
-    api::{error, routes::config_api},
+    api::{error, route::config_api},
     config, db, middleware,
-    web::routes::config_app,
+    web::route::config_app,
     AppState,
 };
+use std::str::FromStr;
 use tera::Tera;
 
 #[actix_web::main]
@@ -24,6 +26,10 @@ async fn main() -> std::io::Result<()> {
     // redis
     let redis = redis::Client::open(c.redis.url.clone()).expect("Failed to open redis");
 
+    // session
+    // cookie secret key
+    let secret_key = middleware::session::SecretKey::from_str(&c.cookie.secret_key)
+        .expect("cookie secret_key error.");
     // session store
     let session_store = middleware::session::redis_store(c.redis.url.clone())
         .await
@@ -45,14 +51,17 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(middleware::cors::cors(&c.app.url))
             .wrap(Logger::default())
-            .wrap(middleware::session::session(session_store.clone()))
+            .wrap(middleware::session::session(
+                session_store.clone(),
+                secret_key.clone(),
+            ))
             .app_data(shared_data)
             .app_data(
                 web::JsonConfig::default()
                     // register error_handler for JSON extractors.
                     .error_handler(error::json_error_handler),
             )
-            .configure(config_app)
+            .service(web::scope("").wrap(middleware::error::error_handlers()).configure(config_app))
             .service(web::scope("/api").configure(config_api))
             .service(fs::Files::new("/static", "./static").use_last_modified(true))
             .service(

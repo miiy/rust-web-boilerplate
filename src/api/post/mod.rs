@@ -3,5 +3,5 @@ mod error;
 mod handler;
 mod model;
 mod repository;
-pub(crate) mod routes;
+pub(crate) mod route;
 pub mod service;

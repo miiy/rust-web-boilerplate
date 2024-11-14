@@ -3,5 +3,5 @@ mod error;
 pub mod handler;
 pub mod model;
 pub mod repository;
-pub mod routes;
+pub mod route;
 pub mod service;

@@ -8,6 +8,7 @@ pub struct Config {
     pub server: Server,
     pub database: Database,
     pub redis: Redis,
+    pub cookie: Cookie,
 }
 
 #[derive(Debug, Deserialize)]
@@ -31,6 +32,11 @@ pub struct Database {
 #[derive(Debug, Deserialize)]
 pub struct Redis {
     pub url: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Cookie {
+    pub secret_key: String,
 }
 
 impl Config {

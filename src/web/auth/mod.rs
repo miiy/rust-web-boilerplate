@@ -1,6 +1,6 @@
 mod dto;
 mod error;
 mod handler;
-pub mod routes;
+pub mod route;
 mod service;
 mod template;

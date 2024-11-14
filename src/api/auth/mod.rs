@@ -4,5 +4,5 @@ mod handler;
 mod model;
 mod password;
 mod repository;
-pub(crate) mod routes;
+pub(crate) mod route;
 mod service;

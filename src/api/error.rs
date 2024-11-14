@@ -71,6 +71,7 @@ impl error::ResponseError for APIError {
                 HttpResponse::Unauthorized().json(ErrorResponse { error: e.clone() })
             }
             Self::PaymentRequired(e) => {
+
                 log::error!("Payment Required: {}", e.to_string());
                 HttpResponse::PaymentRequired().json(ErrorResponse { error: e.clone() })
             }

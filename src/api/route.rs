@@ -4,7 +4,7 @@ use super::user;
 use actix_web::web;
 
 pub fn config_api(cfg: &mut web::ServiceConfig) {
-    user::routes::init_routes(cfg);
-    post::routes::init_routes(cfg);
-    auth::routes::init_routes(cfg);
+    user::route::init_routes(cfg);
+    post::route::init_routes(cfg);
+    auth::route::init_routes(cfg);
 }

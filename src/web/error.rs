@@ -22,6 +22,9 @@ pub enum AppError {
     #[display("Too Many Requests")]
     TooManyRequests,
 
+    #[display("Template error: {source}")]
+    TemplateError { source: tera::Error },
+
     #[display("Internal Server Error")]
     InternalServerError { source: Box<dyn Error> },
 
@@ -34,11 +37,13 @@ impl error::ResponseError for AppError {
         match self {
             AppError::BadRequest(_) => StatusCode::BAD_REQUEST,
             AppError::Unauthorized => StatusCode::UNAUTHORIZED,
+            AppError::PaymentRequired => StatusCode::PAYMENT_REQUIRED,
             AppError::Forbidden => StatusCode::FORBIDDEN,
             AppError::NotFound => StatusCode::NOT_FOUND,
-            AppError::PaymentRequired => StatusCode::PAYMENT_REQUIRED,
             AppError::TooManyRequests => StatusCode::TOO_MANY_REQUESTS,
-            AppError::InternalServerError { .. } => StatusCode::INTERNAL_SERVER_ERROR,
+            AppError::TemplateError { .. } | AppError::InternalServerError { .. } => {
+                StatusCode::INTERNAL_SERVER_ERROR
+            }
             AppError::ServiceUnavailable => StatusCode::SERVICE_UNAVAILABLE,
         }
     }
@@ -47,11 +52,11 @@ impl error::ResponseError for AppError {
         match self {
             AppError::BadRequest(_) => HttpResponse::BadRequest().body(self.to_string()),
             AppError::Unauthorized => HttpResponse::Unauthorized().body(self.to_string()),
+            AppError::PaymentRequired => HttpResponse::PaymentRequired().body(self.to_string()),
             AppError::Forbidden => HttpResponse::Forbidden().body(self.to_string()),
             AppError::NotFound => HttpResponse::NotFound().body(self.to_string()),
-            AppError::PaymentRequired => HttpResponse::PaymentRequired().body(self.to_string()),
             AppError::TooManyRequests => HttpResponse::TooManyRequests().body(self.to_string()),
-            AppError::InternalServerError { .. } => {
+            AppError::InternalServerError { .. } | AppError::TemplateError { .. } => {
                 HttpResponse::InternalServerError().body(self.to_string())
             }
             AppError::ServiceUnavailable => {
@@ -64,8 +69,9 @@ impl error::ResponseError for AppError {
 // tear
 impl From<tera::Error> for AppError {
     fn from(from: tera::Error) -> Self {
-        AppError::InternalServerError {
-            source: Box::new(from),
+        AppError::TemplateError {
+            source: from,
         }
     }
 }
+
