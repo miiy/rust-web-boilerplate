@@ -2,7 +2,6 @@ use super::dto;
 use super::service;
 use super::template::*;
 use crate::web::error::AppError;
-use crate::web::template;
 use crate::AppState;
 use actix_session::Session;
 use actix_web::{web, Error, HttpResponse};
@@ -10,22 +9,16 @@ use actix_web::{web, Error, HttpResponse};
 // GET /register
 pub async fn register(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = RegisterTemplate {
-        page_title: "Register".to_string(),
-        keywords: "keywords".to_string(),
-        description: "description".to_string(),
     };
-    let html = template::render("auth/register.html", &template, &app_state)?;
+    let html = app_state.template.render(REGISTER_TEMPLATE_PATH, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }
 
 // GET /login
 pub async fn login(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = LoginTemplate {
-        page_title: "Register".to_string(),
-        keywords: "keywords".to_string(),
-        description: "description".to_string(),
     };
-    let html = template::render("auth/login.html", &template, &app_state)?;
+    let html = app_state.template.render(LOGIN_TEMPLATE_PATH, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }
 

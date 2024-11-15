@@ -1,48 +1,82 @@
-use crate::config::AppMetaData;
 use crate::web::error::AppError;
-use crate::AppState;
 use serde::Serialize;
+use tera::Tera;
+use crate::config::AppMetaData;
 
-pub fn render<T: Serialize>(
-    template: &str,
-    context: &T,
-    app_state: &AppState,
-) -> Result<String, AppError> {
-    let mut ctx = default_context(app_state)?;
-    ctx.extend(tera::Context::from_serialize(context)?);
-    app_state
-        .tera
-        .render(template, &ctx)
-        .map_err(AppError::from)
+#[derive(Clone)]
+pub struct Template {
+    pub tera: Tera,
+    pub metadata: MetaData,
 }
 
-pub fn render_with<T: Serialize, F>(
-    template: &str,
-    context: &T,
-    app_state: &AppState,
-    modifier: F,
-) -> Result<String, AppError>
-where
-    F: FnOnce(&mut tera::Context),
-{
-    let mut ctx = default_context(app_state)?;
-    ctx.extend(tera::Context::from_serialize(context)?);
-    modifier(&mut ctx);
-    println!("{:?}", ctx);
-    app_state
-        .tera
-        .render(template, &ctx)
-        .map_err(AppError::from)
+#[derive(Serialize, Default, Clone)]
+pub struct MetaData {
+    pub title: String,
+    pub keywords: String,
+    pub description: String,
 }
 
 #[derive(Serialize)]
 struct DefaultContext {
-    metadata: AppMetaData,
+    metadata: MetaData,
 }
 
-pub fn default_context(app_state: &AppState) -> Result<tera::Context, tera::Error> {
-    let ctx = DefaultContext {
-        metadata: app_state.metadata.clone(),
-    };
-    tera::Context::from_serialize(&ctx)
+impl Template {
+    pub fn new(dir: &str) -> Result<Self, AppError> {
+        let tera = Tera::new(dir)?;
+        Ok(Self {
+            tera,
+            metadata: MetaData::default()
+        })
+    }
+
+    pub fn set_metadata(&mut self, metadata: MetaData) {
+        self.metadata = metadata;
+    }
+
+    pub fn render<T: Serialize>(
+        &self,
+        template: &str,
+        context: &T,
+    ) -> Result<String, AppError> {
+        // default context        
+        let mut ctx = self.default_context()?;
+
+        ctx.extend(tera::Context::from_serialize(context)?);
+        self.tera
+            .render(template, &ctx)
+            .map_err(AppError::from)
+    }
+
+    pub fn default_context(&self) -> Result<tera::Context, tera::Error> {
+        let default_ctx = DefaultContext{
+            metadata: self.metadata.clone(),
+        };
+        tera::Context::from_serialize(&default_ctx)
+    }
+
+    pub fn render_with<T: Serialize, F>(
+        &self,
+        template: &str,
+        context: &T,
+        modifier: F,
+    ) -> Result<String, AppError>
+    where
+        F: FnOnce(&mut tera::Context),
+    {
+        let mut ctx = self.default_context()?;
+        ctx.extend(tera::Context::from_serialize(context)?);
+        modifier(&mut ctx);
+        self.tera.render(template, &ctx).map_err(AppError::from)
+    }
+}
+
+impl From<AppMetaData> for MetaData {
+    fn from(metadata: AppMetaData) -> Self {
+        Self {
+            title: metadata.title,
+            keywords: metadata.keywords,
+            description: metadata.description,
+        }
+    }
 }

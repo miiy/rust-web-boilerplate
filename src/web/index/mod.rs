@@ -1,3 +1,3 @@
-pub mod handler;
+mod handler;
 pub mod route;
 mod template;

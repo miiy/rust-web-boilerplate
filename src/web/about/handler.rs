@@ -1,5 +1,4 @@
 use super::template::*;
-use crate::web::template;
 use crate::AppState;
 use actix_web::{get, web, Error, HttpResponse};
 
@@ -9,6 +8,6 @@ async fn index(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
         about: "about".to_string(),
     };
 
-    let html = template::render("about/index.html", &template, &app_state)?;
+    let html = app_state.template.render(INDEX_TEMPLATE_PATH, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }

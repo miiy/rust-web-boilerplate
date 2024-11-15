@@ -1,17 +1,14 @@
 use serde::Serialize;
 
+pub const REGISTER_TEMPLATE_PATH: &str = "auth/register.html";
+pub const LOGIN_TEMPLATE_PATH: &str = "auth/login.html";
+
 #[derive(Serialize)]
 // auth/register.html
 pub struct RegisterTemplate {
-    pub page_title: String,
-    pub keywords: String,
-    pub description: String,
 }
 
 #[derive(Serialize)]
 // auth/login.html
 pub struct LoginTemplate {
-    pub page_title: String,
-    pub keywords: String,
-    pub description: String,
 }

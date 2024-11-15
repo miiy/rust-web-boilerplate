@@ -38,7 +38,7 @@ fn get_error_response<B>(res: &ServiceResponse<B>, error: &str) -> HttpResponse 
         .app_data::<web::Data<AppState>>()
         .map(|t| t.get_ref());
     let tera = match app_state {
-        Some(app_state) => Some(&app_state.tera),
+        Some(app_state) => Some(&app_state.template.tera),
         None => return fallback(error),
     };
 

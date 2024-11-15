@@ -1,7 +1,6 @@
 use super::dto::*;
 use super::template::*;
 use crate::web::error::AppError;
-use crate::web::template;
 use crate::AppState;
 use actix_web::{web, Error, HttpRequest, HttpResponse};
 use std::collections::HashMap;
@@ -28,12 +27,9 @@ pub async fn index(
     let resp = super::service::index(&req, &app_state).await?;
 
     let template = IndexTemplate {
-        page_title: "Home".to_string(),
-        keywords: "keywords".to_string(),
-        description: "description".to_string(),
         lists: resp.lists,
     };
-    let html = template::render("post/index.html", &template, &app_state)?;
+    let html = app_state.template.render(INDEX_TEMPLATE_PATH, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }
 
@@ -49,11 +45,8 @@ pub async fn detail(
     let req = DetailRequest { id: id };
     let _resp = super::service::detail(&req, &app_state).await?;
     let template = DetailTemplate {
-        page_title: "Home".to_string(),
-        keywords: "keywords".to_string(),
-        description: "description".to_string(),
     };
-    let html = template::render("post/detail.html", &template, &app_state)?;
+    let html = app_state.template.render(DETAIL_TEMPLATE_PATH, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }
 
@@ -63,11 +56,8 @@ pub async fn create(app_state: web::Data<AppState>) -> Result<HttpResponse, Erro
     let _resp = super::service::create(&req, &app_state).await?;
 
     let template = CreateTemplate {
-        page_title: "create".to_string(),
-        keywords: "keywords".to_string(),
-        description: "description".to_string(),
     };
-    let html = template::render("post/create.html", &template, &app_state)?;
+    let html = app_state.template.render(CREATE_TEMPLATE_PATH, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }
 
@@ -85,10 +75,7 @@ pub async fn edit(
     let _resp = super::service::edit(&req, &app_state).await;
 
     let template = EditTemplate {
-        page_title: "edit".to_string(),
-        keywords: "keywords".to_string(),
-        description: "description".to_string(),
     };
-    let html = template::render("post/edit.html", &template, &app_state)?;
+    let html = app_state.template.render(EDIT_TEMPLATE_PATH, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }

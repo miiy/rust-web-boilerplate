@@ -5,10 +5,10 @@ use rust_web::{
     api::{error, route::config_api},
     config, db, middleware,
     web::route::config_app,
+    web::template::Template,
     AppState,
 };
 use std::str::FromStr;
-use tera::Tera;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -36,16 +36,16 @@ async fn main() -> std::io::Result<()> {
         .expect("Failed to open redis");
 
     // template
-    let tera = Tera::new("templates/**/*.html").expect("Parsing error");
+    let mut template = Template::new("templates/**/*.html").expect("Parsing error");
+    template.set_metadata(c.app.metadata.into());
 
     // actix web
     log::info!("Starting HTTP server at {}", c.server.addrs);
     HttpServer::new(move || {
         let shared_data = web::Data::new(AppState {
-            metadata: c.app.metadata.clone(),
             db: pool.clone(),
             redis: redis.clone(),
-            tera: tera.clone(),
+            template: template.clone(),
         });
 
         App::new()

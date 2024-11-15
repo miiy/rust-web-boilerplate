@@ -28,6 +28,7 @@ The project adopts a modular architectural design.
 ```text
 ├── config        // app config files
 ├── docs          // documents
+├── frontend      // frontend files
 ├── migrations    // database migrations files
 ├── src
 │ ├── api         // api modules
@@ -35,14 +36,14 @@ The project adopts a modular architectural design.
 │ │ ├── post      // post module
 │ │ ├── error.rs  // api error
 │ │ ├── mod.rs
-│ │ └── routes.rs // api routes
+│ │ └── route.rs  // api routes
 │ ├── middleware  // actix middleware
 │ ├── web         // web modules
 │ │ ├── auth      // auth module
 │ │ ├── index     // index module
 │ │ ├── error.rs  // web error
 │ │ ├── mod.rs
-│ │ └── routes.rs // web routes
+│ │ └── route.rs  // web routes
 │ ├── lib.rs
 │ ├── main.rs
 │ ├── config.rs   // app config
@@ -65,7 +66,7 @@ API module structure
 │ │ │ ├── handler.rs    // handler
 │ │ │ ├── service.rs    // service logic
 │ │ │ ├── mod.rs
-│ │ │ ├── routes.rs     // module routes
+│ │ │ ├── route.rs      // module routes
 │ │ │ ├── repository.rs // repository
 │ │ │ ├── dto.rs        // request and response struct
 │ │ │ └── model.rs      // model
@@ -80,7 +81,7 @@ WEB module structure
 │ │ │ ├── handler.rs  // handler
 │ │ │ ├── service.rs  // service
 │ │ │ ├── mod.rs
-│ │ │ ├── routes.rs   // module routes
+│ │ │ ├── route.rs    // module routes
 │ │ │ ├── dto.rs      // data transfer object
 │ │ │ ├── template.rs // tera templates files
 ```
