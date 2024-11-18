@@ -11,7 +11,7 @@ pub async fn index(req: &IndexRequest, app_state: &AppState) -> Result<IndexResp
         })?;
 
     let lists = resp
-        .lists
+        .data
         .into_iter()
         .map(|item| Post {
             id: item.id,
@@ -25,8 +25,7 @@ pub async fn index(req: &IndexRequest, app_state: &AppState) -> Result<IndexResp
         .collect();
 
     Ok(IndexResponse {
-        page: req.page,
-        lists: lists,
+        data: lists,
     })
 }
 

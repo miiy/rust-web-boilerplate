@@ -4,7 +4,10 @@ use time::OffsetDateTime;
 // list
 #[derive(Debug, Serialize)]
 pub struct ListResponse {
-    pub lists: Vec<ListResponseItem>,
+    pub page: u32,
+    pub per_page: u32,
+    pub pages: u32,
+    pub data: Vec<ListResponseItem>,
 }
 
 #[derive(Debug, Serialize)]

@@ -5,10 +5,8 @@ pub const LOGIN_TEMPLATE_PATH: &str = "auth/login.html";
 
 #[derive(Serialize)]
 // auth/register.html
-pub struct RegisterTemplate {
-}
+pub struct RegisterTemplate {}
 
 #[derive(Serialize)]
 // auth/login.html
-pub struct LoginTemplate {
-}
+pub struct LoginTemplate {}

@@ -8,16 +8,16 @@ use actix_web::{web, Error, HttpResponse};
 
 // GET /register
 pub async fn register(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
-    let template = RegisterTemplate {
-    };
-    let html = app_state.template.render(REGISTER_TEMPLATE_PATH, &template)?;
+    let template = RegisterTemplate {};
+    let html = app_state
+        .template
+        .render(REGISTER_TEMPLATE_PATH, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }
 
 // GET /login
 pub async fn login(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
-    let template = LoginTemplate {
-    };
+    let template = LoginTemplate {};
     let html = app_state.template.render(LOGIN_TEMPLATE_PATH, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }

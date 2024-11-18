@@ -1,5 +1,18 @@
 {% extends "layout/base.html" %}
 
 {% block content %}
-  list
+<h1>lists</h1>
+
+<div class="post-list">
+  {% for post in data %}
+    <div class="post-item">
+      <h2><a href="/posts/{{ post.id }}">{{ post.title }}</a></h2>
+      <div class="post-meta">
+        <span>作者: {{ post.author }}</span>
+        <span>创建时间: {{ post.create_time }}</span>
+        <span>更新时间: {{ post.update_time }}</span>
+      </div>
+    </div>
+  {% endfor %}
+</div>
 {% endblock content %}

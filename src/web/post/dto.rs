@@ -19,8 +19,7 @@ pub struct IndexRequest {
 
 #[derive(Debug, Serialize)]
 pub struct IndexResponse {
-    pub page: u32,
-    pub lists: Vec<Post>,
+    pub data: Vec<Post>,
 }
 
 #[derive(Debug, Deserialize)]

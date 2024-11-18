@@ -35,20 +35,24 @@ impl Post {
         Ok(item)
     }
 
+    pub async fn find_count(pool: &MySqlPool) -> Result<i64, sqlx::Error> {
+        let count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM posts WHERE delete_time IS NULL")
+        .fetch_one(pool)
+        .await?;
+        Ok(count)
+    }
+
     pub async fn find_all(
         pool: &MySqlPool,
-        page: u32,
-        page_size: u32,
+        limit: u32,
+        offset: u64,
     ) -> Result<Vec<Post>, sqlx::Error> {
-        let page = if page == 0 { 1 } else { page };
-        let limit = page_size;
-        let offset = (page - 1) * page_size;
-
-        let posts: Vec<Post> = sqlx::query_as(
+        let items: Vec<Post> = sqlx::query_as(
             "
         SELECT `id`, `category_id`, `title`, `author`, `content`
         FROM `posts`
         WHERE `delete_time` IS NULL
+        ORDER BY `create_time` DESC
         LIMIT ? OFFSET ?
         ",
         )
@@ -57,7 +61,7 @@ impl Post {
         .fetch_all(pool)
         .await?;
 
-        Ok(posts)
+        Ok(items)
     }
 
     pub async fn update(pool: &MySqlPool, item: &Post) -> Result<u64, sqlx::Error> {

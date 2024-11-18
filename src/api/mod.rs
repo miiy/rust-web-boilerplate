@@ -1,5 +1,6 @@
 mod auth;
 pub mod error;
+mod pagination;
 pub mod post;
 pub mod route;
-pub mod user;
+mod user;

@@ -62,11 +62,12 @@ async fn main() -> std::io::Result<()> {
                     // register error_handler for JSON extractors.
                     .error_handler(error::json_error_handler),
             )
-            .service(
-                web::scope("")
-                    .wrap(middleware::error::error_handlers())
-                    .configure(config_app),
-            )
+            // .service(
+            //     web::scope("")
+            //         .wrap(middleware::error::error_handlers())
+            //         .configure(config_app),
+            // )
+            .configure(config_app)
             .service(web::scope("/api").configure(config_api))
             .service(fs::Files::new("/static", "./static").use_last_modified(true))
             .service(

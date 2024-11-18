@@ -1,3 +1,5 @@
+// custom error handler
+// https://github.com/actix/examples/blob/master/templating/tera/src/main.rs
 use crate::AppState;
 use actix_web::{
     body::BoxBody,

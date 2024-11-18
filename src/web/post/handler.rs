@@ -26,9 +26,7 @@ pub async fn index(
     };
     let resp = super::service::index(&req, &app_state).await?;
 
-    let template = IndexTemplate {
-        lists: resp.lists,
-    };
+    let template = IndexTemplate { data: resp.data };
     let html = app_state.template.render(INDEX_TEMPLATE_PATH, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }
@@ -43,8 +41,9 @@ pub async fn detail(
         .parse::<u64>()
         .map_err(|e| AppError::BadRequest(e.to_string()))?;
     let req = DetailRequest { id: id };
-    let _resp = super::service::detail(&req, &app_state).await?;
+    let resp = super::service::detail(&req, &app_state).await?;
     let template = DetailTemplate {
+        post: resp.post,
     };
     let html = app_state.template.render(DETAIL_TEMPLATE_PATH, &template)?;
     Ok(HttpResponse::Ok().body(html))
@@ -55,8 +54,7 @@ pub async fn create(app_state: web::Data<AppState>) -> Result<HttpResponse, Erro
     let req = CreateRequest {};
     let _resp = super::service::create(&req, &app_state).await?;
 
-    let template = CreateTemplate {
-    };
+    let template = CreateTemplate {};
     let html = app_state.template.render(CREATE_TEMPLATE_PATH, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }
@@ -74,8 +72,7 @@ pub async fn edit(
     let req = EditRequest { id: id };
     let _resp = super::service::edit(&req, &app_state).await;
 
-    let template = EditTemplate {
-    };
+    let template = EditTemplate {};
     let html = app_state.template.render(EDIT_TEMPLATE_PATH, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }

@@ -1,7 +1,7 @@
+use crate::config::AppMetaData;
 use crate::web::error::AppError;
 use serde::Serialize;
 use tera::Tera;
-use crate::config::AppMetaData;
 
 #[derive(Clone)]
 pub struct Template {
@@ -26,7 +26,7 @@ impl Template {
         let tera = Tera::new(dir)?;
         Ok(Self {
             tera,
-            metadata: MetaData::default()
+            metadata: MetaData::default(),
         })
     }
 
@@ -34,22 +34,16 @@ impl Template {
         self.metadata = metadata;
     }
 
-    pub fn render<T: Serialize>(
-        &self,
-        template: &str,
-        context: &T,
-    ) -> Result<String, AppError> {
-        // default context        
+    pub fn render<T: Serialize>(&self, template: &str, context: &T) -> Result<String, AppError> {
+        // default context
         let mut ctx = self.default_context()?;
 
         ctx.extend(tera::Context::from_serialize(context)?);
-        self.tera
-            .render(template, &ctx)
-            .map_err(AppError::from)
+        self.tera.render(template, &ctx).map_err(AppError::from)
     }
 
     pub fn default_context(&self) -> Result<tera::Context, tera::Error> {
-        let default_ctx = DefaultContext{
+        let default_ctx = DefaultContext {
             metadata: self.metadata.clone(),
         };
         tera::Context::from_serialize(&default_ctx)
