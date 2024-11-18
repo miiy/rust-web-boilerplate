@@ -6,6 +6,7 @@ use rust_web::{
     config, db, middleware,
     web::route::config_app,
     web::template::Template,
+    web::vite,
     AppState,
 };
 use std::str::FromStr;
@@ -35,10 +36,15 @@ async fn main() -> std::io::Result<()> {
         .await
         .expect("Failed to open redis");
 
-    // template
-    let mut template = Template::new("templates/**/*.html").expect("Parsing error");
-    template.set_metadata(c.app.metadata.into());
 
+    // template
+    let mut template = Template::new("templates/**/*.html", c.app.metadata.into()).expect("template error");
+
+    // manifest
+    let manifest = vite::Manifest::new("./frontend/dist/.vite/manifest.json").expect("Failed to parse manifest");
+    template.register_function("manifest_chunk", vite::make_manifest_chunk(manifest.clone()));
+    template.register_function("manifest_imported_chunks", vite::make_manifest_imported_chunks(manifest.clone()));
+    
     // actix web
     log::info!("Starting HTTP server at {}", c.server.addrs);
     HttpServer::new(move || {
@@ -69,7 +75,7 @@ async fn main() -> std::io::Result<()> {
             // )
             .configure(config_app)
             .service(web::scope("/api").configure(config_api))
-            .service(fs::Files::new("/static", "./static").use_last_modified(true))
+            .service(fs::Files::new("/static", "./frontend/dist").use_last_modified(true))
             .service(
                 web::resource("/favicon.ico")
                     .route(web::get().to(|| async { fs::NamedFile::open("./static/favicon.ico") })),

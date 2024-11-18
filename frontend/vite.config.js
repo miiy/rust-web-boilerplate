@@ -10,6 +10,9 @@ export default defineConfig({
     vue(),
     vueDevTools(),
   ],
+  server: {
+    port: 8081,
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
@@ -18,7 +21,10 @@ export default defineConfig({
   build: {
     manifest: true,
     rollupOptions: {
-      input: '/src/main.js'
+      input: {
+        main: '/src/main.js',
+        login: '/src/login.js'
+      }
     }
   }
 })

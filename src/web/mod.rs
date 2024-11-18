@@ -6,4 +6,4 @@ pub mod index;
 pub mod post;
 pub mod route;
 pub mod template;
-mod vite;
+pub mod vite;

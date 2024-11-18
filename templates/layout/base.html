@@ -6,9 +6,26 @@
     <title>{{ metadata.title }}</title>
     <meta name="keywords" content="{{ metadata.keywords }}"/>
     <meta name="description" content="{{ metadata.description }}"/>
-    <link type="text/css" rel="stylesheet" href="/static/css/main.css" />
-    <script src="https://unpkg.com/vue@3.5.12/dist/vue.global.js"></script>
-    <script src="/static/js/main.js"></script>
+
+    {% set manifest = manifest_chunk(name="src/main.js") %}
+    {% for cssFile in manifest.css %}
+    <link rel="stylesheet" rel="stylesheet" href="/static/{{ cssFile }}" />
+    {% endfor %}
+    
+    <script type="module" href="/static/{{ manifest.file}}"></script>
+
+    {# for cssFile of manifest[name].css #}
+    <link rel="stylesheet" href="/cssFile" />
+
+    {# for chunk of importedChunks(manifest, name) #}
+        {# for cssFile of chunk.css #}
+    <link rel="stylesheet" href="/cssFile" />
+
+    <script type="module" src="/manifest[name].file"></script>
+
+    {# for chunk of importedChunks(manifest, name) #}
+    <link rel="modulepreload" href="/chunk.file" />
+
     {% block head %}
     {% endblock %}
 </head>

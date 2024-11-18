@@ -22,16 +22,17 @@ struct DefaultContext {
 }
 
 impl Template {
-    pub fn new(dir: &str) -> Result<Self, AppError> {
+    pub fn new(dir: &str, metadata: MetaData) -> Result<Self, AppError> {
         let tera = Tera::new(dir)?;
         Ok(Self {
             tera,
-            metadata: MetaData::default(),
+            metadata: metadata,
         })
     }
 
-    pub fn set_metadata(&mut self, metadata: MetaData) {
-        self.metadata = metadata;
+    pub fn register_function<F>(&mut self, name: &str, function: F)
+    where F: tera::Function + 'static {
+        self.tera.register_function(name, function);
     }
 
     pub fn render<T: Serialize>(&self, template: &str, context: &T) -> Result<String, AppError> {

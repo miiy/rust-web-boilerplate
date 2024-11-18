@@ -1,16 +1,18 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <header>
-    <div class="wrapper">
-      <HelloWorld msg="hello world!" />
-    </div>
-  </header>
-
+  <h1>Hello App!</h1>
+  <p>
+    <strong>Current route path:</strong> {{ $route.fullPath }}
+  </p>
+  <nav>
+    <RouterLink to="/">Home</RouterLink>
+    <RouterLink to="/login">Login</RouterLink>
+  </nav>
   <main>
-    <button class="btn btn-primary">button</button>
+    <RouterView />
   </main>
 </template>
 

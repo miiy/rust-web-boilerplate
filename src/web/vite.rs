@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
+use std::error::Error;
 use std::collections::{HashMap, HashSet};
+use std::fs;
 use std::str::FromStr;
+use tera;
 
 // vite backend integration
 // https://cn.vite.dev/guide/backend-integration.html
@@ -52,13 +55,14 @@ use std::str::FromStr;
 
 type ManifestMap = HashMap<String, ManifestChunk>;
 
-struct Manifest {
-    data: ManifestMap,
+#[derive(Clone)]
+pub struct Manifest {
+    pub data: ManifestMap,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
-struct ManifestChunk {
+pub struct ManifestChunk {
     src: Option<String>,
     file: String,
     css: Option<Vec<String>>,
@@ -81,6 +85,12 @@ impl FromStr for Manifest {
 }
 
 impl Manifest {
+    pub fn new(path: &str) -> Result<Self, Box<dyn Error>> {
+        let manifest_content = fs::read_to_string(path)?;
+        let manifest = Self::from_str(&manifest_content)?;
+        Ok(manifest)
+    }
+
     pub fn chunk(&self, name: &str) -> Option<&ManifestChunk> {
         manifest_chunk(&self.data, name)
     }
@@ -127,6 +137,33 @@ fn imported_chunks(manifest: &ManifestMap, name: &str) -> Vec<ManifestChunk> {
         None => Vec::new(),
     }
 }
+
+// tear template function
+
+pub fn make_manifest_chunk(manifest: Manifest) -> impl tera::Function {
+    Box::new(move |args: &HashMap<String, tera::Value>| -> tera::Result<tera::Value> {
+        match args.get("name") {
+            Some(val) => match tera::from_value::<String>(val.clone()) {
+                Ok(v) =>  Ok(tera::to_value(manifest.chunk(&v)).unwrap_or_default()),
+                Err(_) => Err("oops".into()),
+            },
+            None => Err("oops".into()),
+        }
+    })
+}
+
+pub fn make_manifest_imported_chunks(manifest: Manifest) -> impl tera::Function {
+    Box::new(move |args: &HashMap<String, tera::Value>| -> tera::Result<tera::Value> {
+        match args.get("name") {
+            Some(val) => match tera::from_value::<String>(val.clone()) {
+                Ok(v) =>  Ok(tera::to_value(manifest.imported_chunks(&v)).unwrap_or_default()),
+                Err(_) => Err("oops".into()),
+            },
+            None => Err("oops".into()),
+        }
+    })
+}
+
 
 #[cfg(test)]
 mod tests {
