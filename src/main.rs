@@ -44,7 +44,7 @@ async fn main() -> std::io::Result<()> {
     let manifest = vite::Manifest::new("./frontend/dist/.vite/manifest.json").expect("Failed to parse manifest");
     template.register_function("manifest_chunk", vite::make_manifest_chunk(manifest.clone()));
     template.register_function("manifest_imported_chunks", vite::make_manifest_imported_chunks(manifest.clone()));
-    
+
     // actix web
     log::info!("Starting HTTP server at {}", c.server.addrs);
     HttpServer::new(move || {
@@ -78,7 +78,7 @@ async fn main() -> std::io::Result<()> {
             .service(fs::Files::new("/static", "./frontend/dist").use_last_modified(true))
             .service(
                 web::resource("/favicon.ico")
-                    .route(web::get().to(|| async { fs::NamedFile::open("./static/favicon.ico") })),
+                    .route(web::get().to(|| async { fs::NamedFile::open("./frontend/dist/favicon.ico") })),
             )
     })
     .bind(&c.server.addrs)?

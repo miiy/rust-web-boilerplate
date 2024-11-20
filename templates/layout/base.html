@@ -11,9 +11,18 @@
     {% for cssFile in manifest.css %}
     <link rel="stylesheet" rel="stylesheet" href="/static/{{ cssFile }}" />
     {% endfor %}
-    
-    <script type="module" href="/static/{{ manifest.file}}"></script>
 
+    <script type="module" src="/static/{{ manifest.file}}"></script>
+
+    {% set home_manifest = manifest_chunk(name="src/views/HomeView.vue") %}
+    <script type="module" src="/static/{{ home_manifest.file}}"></script>
+
+    {% set home_imported = manifest_imported_chunks(name="src/views/HomeView.vue") %}
+    {% for file in home_imported %}
+    <script type="module" src="/static/{{ file.file}}"></script>
+    {% endfor %}
+
+<!-- 
     {# for cssFile of manifest[name].css #}
     <link rel="stylesheet" href="/cssFile" />
 
@@ -24,7 +33,7 @@
     <script type="module" src="/manifest[name].file"></script>
 
     {# for chunk of importedChunks(manifest, name) #}
-    <link rel="modulepreload" href="/chunk.file" />
+    <link rel="modulepreload" href="/chunk.file" /> -->
 
     {% block head %}
     {% endblock %}
@@ -34,6 +43,7 @@
         {% include "partials/navbar.html"  %}
     </header>
     <main>
+        <div id="app"></div>
         <div class="container">
         {% block content %}{% endblock %}
         </div>

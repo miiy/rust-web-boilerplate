@@ -1,5 +1,6 @@
 <script setup>
 import HelloWorld from '../components/HelloWorld.vue'
+alert('HomeView')
 </script>
 
 <template>
