@@ -14,14 +14,13 @@
 
     <script type="module" src="/static/{{ manifest.file}}"></script>
 
-    {% set home_manifest = manifest_chunk(name="src/views/HomeView.vue") %}
+    {% set home_manifest = manifest_chunk(name="src/pages/home.html") %}
     <script type="module" src="/static/{{ home_manifest.file}}"></script>
 
-    {% set home_imported = manifest_imported_chunks(name="src/views/HomeView.vue") %}
+    {% set home_imported = manifest_imported_chunks(name="src/pages/home.html") %}
     {% for file in home_imported %}
     <script type="module" src="/static/{{ file.file}}"></script>
     {% endfor %}
-
 <!-- 
     {# for cssFile of manifest[name].css #}
     <link rel="stylesheet" href="/cssFile" />

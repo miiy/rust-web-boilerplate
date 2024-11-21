@@ -1,8 +1,12 @@
-import { createMemoryHistory, createRouter } from 'vue-router'
+import { createWebHistory, createRouter } from 'vue-router'
 
-import HomeView from '../views/HomeView.vue'
-import AboutView from '../views/AboutView.vue'
-import LoginView from '../views/LoginView.vue'
+import HomeView from '../views/Home.vue'
+import AboutView from '../views/About.vue'
+import LoginView from '../views/auth/Login.vue'
+import RegisterView from '../views/auth/Register.vue'
+import PostListView from '../views/post/List.vue'
+import PostDetailView from '../views/post/Detail.vue'
+
 
 const routes = [
   {
@@ -19,11 +23,26 @@ const routes = [
     path: '/login',
     name: 'login',
     component: LoginView
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: RegisterView
+  },
+  {
+    path: '/posts',
+    name: 'post_list',
+    component: PostListView
+  },
+  {
+    path: '/posts/:id',
+    name: 'post_detial',
+    component: PostDetailView
   }
 ]
 
 const router = createRouter({
-  history: createMemoryHistory(),
+  history: createWebHistory(),
   routes: routes,
 })
 

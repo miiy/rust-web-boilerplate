@@ -1,6 +1,43 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
+/* navbar */
+.bd-navbar{
+    background-color: rgba(255,255,255,0.95);
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.05),inset 0 -1px 0 rgba(0,0,0,0.15);
+}
+
 /* main-container */
 .main-container {
-    padding-top: 6rem
+    padding-top: 6rem;
+}
+
+/* footer */
+.bd-footer a {
+    color:#495057;
+    text-decoration:none;
+}
+.bd-footer a:hover,
+.bd-footer a:focus {
+    color:#0d6efd;
+    text-decoration:underline;
+}
+
+/* card*/
+.card-header, .card-footer {
+    background: none;
+}
+.card-header {
+    padding: 1.125rem 1.5rem;
+}
+.card-body {
+    padding: 1.5rem;
+}
+
+/* placeholder-img */
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
 }
