@@ -11,14 +11,14 @@ pub async fn register(app_state: web::Data<AppState>) -> Result<HttpResponse, Er
     let template = RegisterTemplate {};
     let html = app_state
         .template
-        .render(REGISTER_TEMPLATE_PATH, &template)?;
+        .render(REGISTER_TEMPLATE_PATH, REGISTER_RESOURCE_NAME, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }
 
 // GET /login
 pub async fn login(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = LoginTemplate {};
-    let html = app_state.template.render(LOGIN_TEMPLATE_PATH, &template)?;
+    let html = app_state.template.render(LOGIN_TEMPLATE_PATH, LOGIN_RESOURCE_NAME, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }
 

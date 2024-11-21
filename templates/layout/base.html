@@ -1,53 +1,46 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ metadata.title }}</title>
-    <meta name="keywords" content="{{ metadata.keywords }}"/>
-    <meta name="description" content="{{ metadata.description }}"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ metadata.title }}</title>
+  <meta name="keywords" content="{{ metadata.keywords }}" />
+  <meta name="description" content="{{ metadata.description }}" />
+  {# https://vite.dev/guide/backend-integration.html #}
 
-    {% set manifest = manifest_chunk(name="src/main.js") %}
-    {% for cssFile in manifest.css %}
-    <link rel="stylesheet" rel="stylesheet" href="/static/{{ cssFile }}" />
-    {% endfor %}
+  {%- set manifest = manifest() %}
+  {%- for cssFile in manifest[resource_name].css | default(value=[]) %}
+  <link rel="stylesheet" href="/static/{{ cssFile }}" />
+  {%- endfor %}
 
-    <script type="module" src="/static/{{ manifest.file}}"></script>
+  {%- set imported_chunks = imported_chunks(name=resource_name) | default(value=[]) %}
+  {%- for chunk in imported_chunks %}
+  {%- for cssFile in chunk.css | default(value=[]) %}
+  <link rel="stylesheet" href="/static/{{ cssFile }}" />
+  {%- endfor %}
+  {%- endfor %}
 
-    {% set home_manifest = manifest_chunk(name="src/pages/home.html") %}
-    <script type="module" src="/static/{{ home_manifest.file}}"></script>
+  <script type="module" src="/static/{{ manifest[resource_name].file}}"></script>
 
-    {% set home_imported = manifest_imported_chunks(name="src/pages/home.html") %}
-    {% for file in home_imported %}
-    <script type="module" src="/static/{{ file.file}}"></script>
-    {% endfor %}
-<!-- 
-    {# for cssFile of manifest[name].css #}
-    <link rel="stylesheet" href="/cssFile" />
-
-    {# for chunk of importedChunks(manifest, name) #}
-        {# for cssFile of chunk.css #}
-    <link rel="stylesheet" href="/cssFile" />
-
-    <script type="module" src="/manifest[name].file"></script>
-
-    {# for chunk of importedChunks(manifest, name) #}
-    <link rel="modulepreload" href="/chunk.file" /> -->
-
-    {% block head %}
-    {% endblock %}
+  {%- for chunk in imported_chunks %}
+  <script type="modulepreload" src="/static/{{ chunk.file}}"></script>
+  {%- endfor %}
+  {% block head %}
+  {% endblock %}
 </head>
+
 <body>
+  <div id="app">
     <header>
-        {% include "partials/navbar.html"  %}
+      {% include "partials/navbar.html" %}
     </header>
-    <main>
-        <div id="app"></div>
-        <div class="container">
-        {% block content %}{% endblock %}
-        </div>
+    <main class="container">
+      {% block content %}{% endblock %}
     </main>
     {% include "partials/footer.html" %}
-    {% block script %}{% endblock %}
+  </div>
+  {% block script %}{% endblock %}
 </body>
+
 </html>

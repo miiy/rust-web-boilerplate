@@ -10,7 +10,7 @@ async fn index(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
     };
     let html = app_state
         .template
-        .render_with(INDEX_TEMPLATE_PATH, &template, |ctx| {
+        .render_with(INDEX_TEMPLATE_PATH, INDEX_RESOURCE_NAME, &template, |ctx| {
             ctx.insert(
                 "metadata",
                 &json!({

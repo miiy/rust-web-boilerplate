@@ -91,17 +91,13 @@ impl Manifest {
         Ok(manifest)
     }
 
-    pub fn chunk(&self, name: &str) -> Option<&ManifestChunk> {
-        manifest_chunk(&self.data, name)
+    pub fn manifest(&self) -> &ManifestMap {
+        &self.data
     }
 
     pub fn imported_chunks(&self, name: &str) -> Vec<ManifestChunk> {
         imported_chunks(&self.data, name)
     }
-}
-
-fn manifest_chunk<'a>(manifest: &'a ManifestMap, name: &str) -> Option<&'a ManifestChunk> {
-    manifest.get(name)
 }
 
 fn imported_chunks(manifest: &ManifestMap, name: &str) -> Vec<ManifestChunk> {
@@ -140,19 +136,13 @@ fn imported_chunks(manifest: &ManifestMap, name: &str) -> Vec<ManifestChunk> {
 
 // tear template function
 
-pub fn make_manifest_chunk(manifest: Manifest) -> impl tera::Function {
-    Box::new(move |args: &HashMap<String, tera::Value>| -> tera::Result<tera::Value> {
-        match args.get("name") {
-            Some(val) => match tera::from_value::<String>(val.clone()) {
-                Ok(v) =>  Ok(tera::to_value(manifest.chunk(&v)).unwrap_or_default()),
-                Err(_) => Err("oops".into()),
-            },
-            None => Err("oops".into()),
-        }
+pub fn make_manifest(manifest: Manifest) -> impl tera::Function {
+    Box::new(move |_args: &HashMap<String, tera::Value>| -> tera::Result<tera::Value> {
+        Ok(tera::to_value::<&ManifestMap>(&manifest.data).unwrap_or_default())
     })
 }
 
-pub fn make_manifest_imported_chunks(manifest: Manifest) -> impl tera::Function {
+pub fn make_imported_chunks(manifest: Manifest) -> impl tera::Function {
     Box::new(move |args: &HashMap<String, tera::Value>| -> tera::Result<tera::Value> {
         match args.get("name") {
             Some(val) => match tera::from_value::<String>(val.clone()) {
@@ -215,14 +205,14 @@ mod tests {
     }
 
     #[test]
-    fn test_manifest_chunk() {
+    fn test_manifest() {
         let manifest = setup();
-        let manifest_chunk = manifest.chunk("views/foo.js").unwrap();
+        let manifest_chunk = manifest.manifest().get("views/foo.js").unwrap();
         assert_eq!(&manifest_chunk.file, "assets/foo-BRBmoGS9.js");
     }
 
     #[test]
-    fn test_manifest_imported_chunks() {
+    fn test_imported_chunks() {
         let manifest = setup();
         let chunks = manifest.imported_chunks("views/foo.js");
         let chunk = chunks.first().unwrap();

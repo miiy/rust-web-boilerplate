@@ -8,12 +8,10 @@ import Footer from './components/Footer.vue'
   <header>
     <Navbar />
   </header>
-  <div class="main-container container">
+  <main class="container">
     <RouterView />
-  </div>
+  </main>
   <Footer />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

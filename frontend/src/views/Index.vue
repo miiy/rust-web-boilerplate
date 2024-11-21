@@ -4,8 +4,9 @@ console.log('Home')
 </script>
 
 <template>
-    <HelloWorld msg="Home" />
+
+  <HelloWorld msg="Home" />
+
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

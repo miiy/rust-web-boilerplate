@@ -42,8 +42,8 @@ async fn main() -> std::io::Result<()> {
 
     // manifest
     let manifest = vite::Manifest::new("./frontend/dist/.vite/manifest.json").expect("Failed to parse manifest");
-    template.register_function("manifest_chunk", vite::make_manifest_chunk(manifest.clone()));
-    template.register_function("manifest_imported_chunks", vite::make_manifest_imported_chunks(manifest.clone()));
+    template.register_function("manifest", vite::make_manifest(manifest.clone()));
+    template.register_function("imported_chunks", vite::make_imported_chunks(manifest.clone()));
 
     // actix web
     log::info!("Starting HTTP server at {}", c.server.addrs);

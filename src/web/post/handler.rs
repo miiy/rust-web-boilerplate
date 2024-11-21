@@ -27,7 +27,7 @@ pub async fn index(
     let resp = super::service::index(&req, &app_state).await?;
 
     let template = IndexTemplate { data: resp.data };
-    let html = app_state.template.render(INDEX_TEMPLATE_PATH, &template)?;
+    let html = app_state.template.render(INDEX_TEMPLATE_PATH, INDEX_RESOURCE_NAME, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }
 
@@ -45,7 +45,7 @@ pub async fn detail(
     let template = DetailTemplate {
         post: resp.post,
     };
-    let html = app_state.template.render(DETAIL_TEMPLATE_PATH, &template)?;
+    let html = app_state.template.render(DETAIL_TEMPLATE_PATH, DETAIL_RESOURCE_NAME, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }
 
@@ -55,7 +55,7 @@ pub async fn create(app_state: web::Data<AppState>) -> Result<HttpResponse, Erro
     let _resp = super::service::create(&req, &app_state).await?;
 
     let template = CreateTemplate {};
-    let html = app_state.template.render(CREATE_TEMPLATE_PATH, &template)?;
+    let html = app_state.template.render(CREATE_TEMPLATE_PATH, CREATE_RESOURCE_NAME, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }
 
@@ -73,6 +73,6 @@ pub async fn edit(
     let _resp = super::service::edit(&req, &app_state).await;
 
     let template = EditTemplate {};
-    let html = app_state.template.render(EDIT_TEMPLATE_PATH, &template)?;
+    let html = app_state.template.render(EDIT_TEMPLATE_PATH, EDIT_RESOURCE_NAME, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }

@@ -3,9 +3,16 @@ use serde::Serialize;
 use super::dto::Post;
 
 pub const INDEX_TEMPLATE_PATH: &str = "post/index.html";
+pub const INDEX_RESOURCE_NAME: &str = "src/base.js";
+
 pub const DETAIL_TEMPLATE_PATH: &str = "post/detail.html";
+pub const DETAIL_RESOURCE_NAME: &str = "src/base.js";
+
 pub const CREATE_TEMPLATE_PATH: &str = "post/create.html";
+pub const CREATE_RESOURCE_NAME: &str = "src/base.js";
+
 pub const EDIT_TEMPLATE_PATH: &str = "post/edit.html";
+pub const EDIT_RESOURCE_NAME: &str = "src/base.js";
 
 // post/index.html
 #[derive(Serialize)]

@@ -1,18 +1,18 @@
 {% extends "layout/base.html" %}
 
 {% block content %}
-  <article class="post-detail">
-    <header>
-      <h1>{{ post.title }}</h1>
-      <div class="post-meta">
-        <time datetime="{{ post.create_time }}">
-          {{ post.create_time }}
-        </time>
-      </div>
-    </header>
-
-    <div class="post-content">
-      {{ post.content|safe }}
+<article class="post-detail">
+  <header>
+    <h1>{{ post.title }}</h1>
+    <div class="post-meta">
+      <time datetime="{{ post.create_time }}">
+        {{ post.create_time }}
+      </time>
     </div>
-  </article>
+  </header>
+
+  <div class="post-content">
+    {{ post.content|safe }}
+  </div>
+</article>
 {% endblock content %}

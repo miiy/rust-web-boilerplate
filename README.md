@@ -1,6 +1,6 @@
 # rust-web-boilerplate
 
-Rust web boilerplate with Actix Web, SQLx, redis-rs, Tera
+Rust web boilerplate with Actix Web, SQLx, redis-rs, Tera, Vue 3, Vite
 
 # Required
 
