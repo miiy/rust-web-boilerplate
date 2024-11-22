@@ -36,14 +36,18 @@ async fn main() -> std::io::Result<()> {
         .await
         .expect("Failed to open redis");
 
-
     // template
-    let mut template = Template::new("templates/**/*.html", c.app.metadata.into()).expect("template error");
+    let mut template =
+        Template::new("templates/**/*.html", c.app.metadata.into()).expect("template error");
 
     // manifest
-    let manifest = vite::Manifest::new("./frontend/dist/.vite/manifest.json").expect("Failed to parse manifest");
+    let manifest = vite::Manifest::new("./frontend/dist/.vite/manifest.json")
+        .expect("Failed to parse manifest");
     template.register_function("manifest", vite::make_manifest(manifest.clone()));
-    template.register_function("imported_chunks", vite::make_imported_chunks(manifest.clone()));
+    template.register_function(
+        "imported_chunks",
+        vite::make_imported_chunks(manifest.clone()),
+    );
 
     // actix web
     log::info!("Starting HTTP server at {}", c.server.addrs);
@@ -76,10 +80,9 @@ async fn main() -> std::io::Result<()> {
             .configure(config_app)
             .service(web::scope("/api").configure(config_api))
             .service(fs::Files::new("/static", "./frontend/dist").use_last_modified(true))
-            .service(
-                web::resource("/favicon.ico")
-                    .route(web::get().to(|| async { fs::NamedFile::open("./frontend/dist/favicon.ico") })),
-            )
+            .service(web::resource("/favicon.ico").route(
+                web::get().to(|| async { fs::NamedFile::open("./frontend/dist/favicon.ico") }),
+            ))
     })
     .bind(&c.server.addrs)?
     .run()

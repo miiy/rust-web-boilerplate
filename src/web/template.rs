@@ -31,11 +31,18 @@ impl Template {
     }
 
     pub fn register_function<F>(&mut self, name: &str, function: F)
-    where F: tera::Function + 'static {
+    where
+        F: tera::Function + 'static,
+    {
         self.tera.register_function(name, function);
     }
 
-    pub fn render<T: Serialize>(&self, template: &str, resource_name: &str, context: &T) -> Result<String, AppError> {
+    pub fn render<T: Serialize>(
+        &self,
+        template: &str,
+        resource_name: &str,
+        context: &T,
+    ) -> Result<String, AppError> {
         // default context
         let mut ctx = self.default_context()?;
         ctx.insert("resource_name", resource_name);

@@ -23,3 +23,4 @@ sqlx = { version = "0.8", features = ["runtime-tokio", "mysql", "time"] }
 redis = { version = "0.27.4", features = ["tokio-comp"] }
 bcrypt = "0.15.1"
 base64 = "0.22.1"
+paginator = "0.2.6"

@@ -1,9 +1,9 @@
 use super::dto::*;
 use super::error::PostError;
 use super::model::Post;
+use crate::api::pagination::Pagination;
 use sqlx::MySqlPool;
 use time::OffsetDateTime;
-use crate::api::pagination::Pagination;
 
 pub struct Service;
 

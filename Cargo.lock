@@ -1709,6 +1709,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "paginator"
+version = "0.2.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8cab812174218625b92f0ad026bea851c0eae0aa6378c6a598de689a8c8d429b"
+
+[[package]]
 name = "parking"
 version = "2.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2136,6 +2142,7 @@ dependencies = [
  "derive_more 1.0.0",
  "env_logger",
  "log",
+ "paginator",
  "redis 0.27.4",
  "serde",
  "serde_json",

@@ -8,9 +8,11 @@ async fn index(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = IndexTemplate {
         hello: "Hello, world!".to_string(),
     };
-    let html = app_state
-        .template
-        .render_with(INDEX_TEMPLATE_PATH, INDEX_RESOURCE_NAME, &template, |ctx| {
+    let html = app_state.template.render_with(
+        INDEX_TEMPLATE_PATH,
+        INDEX_RESOURCE_NAME,
+        &template,
+        |ctx| {
             ctx.insert(
                 "metadata",
                 &json!({
@@ -19,6 +21,7 @@ async fn index(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
                     "keywords": "keywords",
                 }),
             );
-        })?;
+        },
+    )?;
     Ok(HttpResponse::Ok().body(html))
 }

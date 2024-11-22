@@ -8,6 +8,3 @@ pub struct LoginRequest {
 
 #[derive(Debug, Deserialize)]
 pub struct LoginResponse {}
-
-#[derive(Debug, Deserialize)]
-pub struct RegisterResponse {}

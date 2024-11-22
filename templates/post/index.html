@@ -1,18 +1,59 @@
 {% extends "layout/base.html" %}
 
 {% block content %}
-<h1>lists</h1>
+<div class="row">
+  <div class="col-12 col-md-9 mb-1">
 
-<div class="post-list">
-  {% for post in data %}
-  <div class="post-item">
-    <h2><a href="/posts/{{ post.id }}">{{ post.title }}</a></h2>
-    <div class="post-meta">
-      <span>作者: {{ post.author }}</span>
-      <span>创建时间: {{ post.create_time }}</span>
-      <span>更新时间: {{ post.update_time }}</span>
+    <div class="card mb-3">
+      <div class="card-header">
+        Lists
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for post in data %}
+        <li class="list-group-item list-group-item-action"><a href="/posts/{{ post.id }}">{{ post.title }}</a> {{ post.author }} {{ post.create_time }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+
+    <div class="d-flex justify-content-center">
+
+      <nav aria-label="Page navigation example">
+        <ul class="pagination">
+          {{ pagination | safe }}
+        </ul>
+      </nav>
+
     </div>
   </div>
-  {% endfor %}
+  <!--end of col-->
+  <div class="col-12 col-md-3 mb-1">
+    <div class="card">
+      <div class="card-header">
+        Category
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item list-group-item-action">
+          <div>
+            <a href="#">Category1</a>
+          </div>
+          <div>
+            <i class="icon-chevron-right"></i>
+          </div>
+        </li>
+        <li class="list-group-item list-group-item-action">
+          <div>
+            <a href="#">Category2</a>
+          </div>
+          <div>
+            <i class="icon-chevron-right"></i>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+  <!--end of col-->
 </div>
+<!--end of row-->
 {% endblock content %}

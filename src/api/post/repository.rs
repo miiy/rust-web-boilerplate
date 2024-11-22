@@ -37,8 +37,8 @@ impl Post {
 
     pub async fn find_count(pool: &MySqlPool) -> Result<i64, sqlx::Error> {
         let count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM posts WHERE delete_time IS NULL")
-        .fetch_one(pool)
-        .await?;
+            .fetch_one(pool)
+            .await?;
         Ok(count)
     }
 

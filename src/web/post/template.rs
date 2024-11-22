@@ -18,12 +18,13 @@ pub const EDIT_RESOURCE_NAME: &str = "src/base.js";
 #[derive(Serialize)]
 pub struct IndexTemplate {
     pub data: Vec<Post>,
+    pub pagination: String,
 }
 
 // post/detail.html
 #[derive(Serialize)]
 pub struct DetailTemplate {
-    pub post: Post
+    pub post: Post,
 }
 
 // post/create.html

@@ -1,13 +1,6 @@
-use super::dto::{LoginRequest, RegisterResponse};
+use super::dto::{LoginRequest, LoginResponse};
 use super::error::AuthError;
-use crate::web::auth::dto::LoginResponse;
-use crate::AppState;
 use actix_session::Session;
-use actix_web::web;
-
-pub async fn register(_app_state: web::Data<AppState>) -> Result<RegisterResponse, AuthError> {
-    Ok(RegisterResponse {})
-}
 
 pub async fn login(req: LoginRequest, session: Session) -> Result<LoginResponse, AuthError> {
     validate_login(&req)?;

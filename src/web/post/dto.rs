@@ -19,6 +19,7 @@ pub struct IndexRequest {
 
 #[derive(Debug, Serialize)]
 pub struct IndexResponse {
+    pub total_pages: u32,
     pub data: Vec<Post>,
 }
 

@@ -8,6 +8,8 @@ async fn index(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
         about: "about".to_string(),
     };
 
-    let html = app_state.template.render(INDEX_TEMPLATE_PATH, INDEX_RESOURCE_NAME, &template)?;
+    let html = app_state
+        .template
+        .render(INDEX_TEMPLATE_PATH, INDEX_RESOURCE_NAME, &template)?;
     Ok(HttpResponse::Ok().body(html))
 }

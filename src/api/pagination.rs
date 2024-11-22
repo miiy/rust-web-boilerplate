@@ -17,12 +17,15 @@ impl Pagination {
         };
 
         let pages = (total as f32 / per_page as f32).ceil() as u32;
-        Self { page, per_page, pages }
+        Self {
+            page,
+            per_page,
+            pages,
+        }
     }
 
     /// Returns the offset for database queries
     pub fn offset(&self) -> u64 {
         ((self.page - 1) * self.per_page) as u64
     }
-
 }

@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
-use std::error::Error;
 use std::collections::{HashMap, HashSet};
+use std::error::Error;
 use std::fs;
 use std::str::FromStr;
 use tera;
@@ -137,23 +137,26 @@ fn imported_chunks(manifest: &ManifestMap, name: &str) -> Vec<ManifestChunk> {
 // tear template function
 
 pub fn make_manifest(manifest: Manifest) -> impl tera::Function {
-    Box::new(move |_args: &HashMap<String, tera::Value>| -> tera::Result<tera::Value> {
-        Ok(tera::to_value::<&ManifestMap>(&manifest.data).unwrap_or_default())
-    })
+    Box::new(
+        move |_args: &HashMap<String, tera::Value>| -> tera::Result<tera::Value> {
+            Ok(tera::to_value::<&ManifestMap>(&manifest.data).unwrap_or_default())
+        },
+    )
 }
 
 pub fn make_imported_chunks(manifest: Manifest) -> impl tera::Function {
-    Box::new(move |args: &HashMap<String, tera::Value>| -> tera::Result<tera::Value> {
-        match args.get("name") {
-            Some(val) => match tera::from_value::<String>(val.clone()) {
-                Ok(v) =>  Ok(tera::to_value(manifest.imported_chunks(&v)).unwrap_or_default()),
-                Err(_) => Err("oops".into()),
-            },
-            None => Err("oops".into()),
-        }
-    })
+    Box::new(
+        move |args: &HashMap<String, tera::Value>| -> tera::Result<tera::Value> {
+            match args.get("name") {
+                Some(val) => match tera::from_value::<String>(val.clone()) {
+                    Ok(v) => Ok(tera::to_value(manifest.imported_chunks(&v)).unwrap_or_default()),
+                    Err(_) => Err("oops".into()),
+                },
+                None => Err("oops".into()),
+            }
+        },
+    )
 }
-
 
 #[cfg(test)]
 mod tests {

@@ -25,6 +25,7 @@ pub async fn index(req: &IndexRequest, app_state: &AppState) -> Result<IndexResp
         .collect();
 
     Ok(IndexResponse {
+        total_pages: resp.pages,
         data: lists,
     })
 }
