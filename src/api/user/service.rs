@@ -7,8 +7,8 @@ use time::OffsetDateTime;
 pub struct Service;
 
 impl Service {
-    pub async fn detail(id: u64, pool: &MySqlPool) -> Result<dto::MeResponse, UserError> {
-        let user_option = User::find(&pool, id).await?;
+    pub async fn detail(name: &str, pool: &MySqlPool) -> Result<dto::MeResponse, UserError> {
+        let user_option = User::find_by_name(&pool, name).await?;
 
         if let Some(user) = user_option {
             let resp = dto::MeResponse {

@@ -1,4 +1,5 @@
 use web::template::Template;
+use api::jwt::JWT;
 
 pub mod api;
 pub mod config;
@@ -10,4 +11,5 @@ pub struct AppState {
     pub db: sqlx::MySqlPool,
     pub redis: redis::Client,
     pub template: Template,
+    pub jwt: JWT,
 }

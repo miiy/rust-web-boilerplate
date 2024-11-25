@@ -2,7 +2,7 @@ use actix_files as fs;
 use actix_web::middleware::Logger;
 use actix_web::{web, App, HttpServer};
 use rust_web::{
-    api::{error, route::config_api},
+    api::{error, route::config_api, jwt::JWT},
     config, db, middleware,
     web::route::config_app,
     web::template::Template,
@@ -26,6 +26,9 @@ async fn main() -> std::io::Result<()> {
 
     // redis
     let redis = redis::Client::open(c.redis.url.clone()).expect("Failed to open redis");
+
+    // jwt
+    let jwt = JWT::new(c.jwt.secret.clone(), c.jwt.expires_in);
 
     // session
     // cookie secret key
@@ -56,6 +59,7 @@ async fn main() -> std::io::Result<()> {
             db: pool.clone(),
             redis: redis.clone(),
             template: template.clone(),
+            jwt: jwt.clone(),
         });
 
         App::new()

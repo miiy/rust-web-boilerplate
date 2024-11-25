@@ -21,3 +21,7 @@ url = "redis://127.0.0.1:6379"
 [cookie]
 name = "SESSIONID"
 secret_key = "dpp7QFH3QR41Ims6mIjdTysAtkM9bOoN3gJAaF0X5HqbKdGdVhWQcdMcJTtqjpUAL4EolObWxhG9s8uN2e32vA=="
+
+[jwt]
+secret = "your-secret-key"
+expires_in = 12

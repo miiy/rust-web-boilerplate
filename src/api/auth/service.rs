@@ -4,6 +4,8 @@ use super::model::User;
 use super::password;
 use sqlx::MySqlPool;
 use time::OffsetDateTime;
+use crate::api::jwt::{JWT, AuthenticatedUser};
+
 
 pub struct Service;
 
@@ -51,7 +53,7 @@ impl Service {
         Ok(())
     }
 
-    pub async fn login(req: LoginRequest, pool: &MySqlPool) -> Result<LoginResponse, AuthError> {
+    pub async fn login(req: LoginRequest, pool: &MySqlPool, jwt: &JWT) -> Result<LoginResponse, AuthError> {
         Self::validate_login(&req)?;
 
         let user_potion = User::find_by_name(&pool, req.name).await?;
@@ -59,7 +61,16 @@ impl Service {
             if !password::bcrypt_verify(&req.password, &user.password)? {
                 return Err(AuthError::WrongPassword);
             }
-            return Ok(LoginResponse { id: user.id });
+
+            let claims = jwt.create_claims(user.name.clone());
+            let token = jwt.encode(&claims)?;
+
+            return Ok(LoginResponse {
+                token_type: "Bearer".to_string(),
+                access_token: token,
+                expires_in: jwt.expires_in,
+                user: AuthenticatedUser { name: user.name },
+            });
         }
         Err(AuthError::WrongPassword)
     }

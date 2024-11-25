@@ -10,6 +10,8 @@ actix-web = "4"
 actix-cors = "0.7.0"
 actix-files = "0.6.6"
 actix-session = { version = "0.10.1", features = ["redis-session"] }
+actix-web-httpauth = "0.8.2"
+actix-identity = "0.8.0"
 log = "0.4"
 env_logger = "0.11.5"
 config = "0.14.0"
@@ -24,3 +26,4 @@ redis = { version = "0.27.4", features = ["tokio-comp"] }
 bcrypt = "0.15.1"
 base64 = "0.22.1"
 paginator = "0.2.6"
+jsonwebtoken = "9.3.0"

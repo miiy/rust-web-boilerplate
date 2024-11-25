@@ -5,6 +5,7 @@ use crate::web::error::AppError;
 use crate::AppState;
 use actix_session::Session;
 use actix_web::{web, Error, HttpResponse};
+use actix_identity::Identity;
 
 // GET /register
 pub async fn register(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
@@ -36,7 +37,9 @@ pub async fn session_login(
     Ok(HttpResponse::Ok().body(""))
 }
 
-pub async fn me(session: Session) -> Result<HttpResponse, Error> {
+pub async fn me(user: Identity,session: Session) -> Result<HttpResponse, Error> {
+    println!("{:?}", user.id());
+
     let user_id: Option<i64> = session.get("user_id").unwrap_or(None);
     println!("user_id: {:?}", user_id);
     Ok(HttpResponse::Ok().body(""))

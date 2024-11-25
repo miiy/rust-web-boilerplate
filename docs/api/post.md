@@ -47,3 +47,24 @@ delete
 ```bash
 curl -X DELETE http://127.0.0.1:8080/api/v1/posts/1
 ```
+
+
+## seeds
+
+```bash
+DELIMITER //
+
+CREATE PROCEDURE InsertPosts(num_posts INT)
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    WHILE i <= num_posts DO
+        INSERT INTO `rust_web`.`posts` (category_id, title, author, content, create_time, update_time)
+        VALUES (1, CONCAT('title', i), CONCAT('admin', i), CONCAT('content', i), NOW(), NOW());
+        SET i = i + 1;
+    END WHILE;
+END //
+
+DELIMITER ;
+
+CALL InsertPosts(50); -- insert 10 rows
+```

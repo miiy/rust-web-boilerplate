@@ -28,12 +28,12 @@ pub fn build_links(resource_path: &str, current_page: usize, total_pages: usize)
             }
             PageItem::CurrentPage(page) => {
                 html.write_fmt(format_args!(
-                    "<li class=\"page-item\"><a class=\"page-link\">{page}</a></li>\n"
+                    "<li class=\"page-item active\"><a class=\"page-link\">{page}</a></li>\n"
                 ))
                 .unwrap();
             }
             PageItem::Ignore => {
-                html.push_str("<li class=\"page-item\">...</li>\n");
+                html.push_str("<li class=\"page-item\"><a class=\"page-link\">...</a></li>\n");
             }
             PageItem::Next(page) => {
                 html.write_fmt(format_args!("<li class=\"page-item\"><a class=\"page-link\" href=\"{resource_path}/{page}\">Next</a></li>\n")).unwrap();
@@ -56,19 +56,19 @@ mod tests {
 
     #[test]
     fn test_paginate() {
-        let html = paginate("/posts/pages", 1, 1);
+        let html = build_links("/posts/pages", 1, 1);
         println!("{}", html);
 
-        let html = paginate("/posts/pages", 1, 2);
+        let html = build_links("/posts/pages", 1, 2);
         println!("{}", html);
 
-        let html = paginate("/posts/pages", 1, 20);
+        let html = build_links("/posts/pages", 1, 20);
         println!("{}", html);
 
-        let html = paginate("/posts/pages", 2, 20);
+        let html = build_links("/posts/pages", 2, 20);
         println!("{}", html);
 
-        let html = paginate("/posts/pages", 20, 20);
+        let html = build_links("/posts/pages", 20, 20);
         println!("{}", html);
     }
 }

@@ -13,7 +13,7 @@ pub enum UserError {
     Database { source: sqlx::Error },
     #[display("redis error: {source}")]
     Redis { source: RedisError },
-    #[display("post not found")]
+    #[display("user not found")]
     NotFound,
 }
 

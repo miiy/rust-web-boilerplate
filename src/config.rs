@@ -9,6 +9,7 @@ pub struct Config {
     pub database: Database,
     pub redis: Redis,
     pub cookie: Cookie,
+    pub jwt: JWT,
 }
 
 #[derive(Debug, Deserialize)]
@@ -46,6 +47,12 @@ pub struct Redis {
 pub struct Cookie {
     pub name: String,
     pub secret_key: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct JWT {
+    pub secret: String,
+    pub expires_in: u32,
 }
 
 impl Config {

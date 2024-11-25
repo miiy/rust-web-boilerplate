@@ -16,6 +16,8 @@ pub enum AuthError {
     Redis { source: RedisError },
     #[display("bcrypt error: {source}")]
     Bcrypt { source: BcryptError },
+    #[display("jwt error: {source}")]
+    JWT { source: jsonwebtoken::errors::Error },
     #[display("user not found")]
     UserNotFound,
     // register
@@ -39,10 +41,11 @@ impl AuthError {
             Self::Database { .. } => 10004,
             Self::Redis { .. } => 10005,
             Self::Bcrypt { .. } => 10006,
-            Self::UserNotFound => 10007,
-            Self::EmailAlreadyExists => 10008,
-            Self::UsernameAlreadyExists => 10009,
-            Self::PasswordDiffer => 10010,
+            Self::JWT { .. } => 10007,
+            Self::UserNotFound => 10008,
+            Self::EmailAlreadyExists => 10009,
+            Self::UsernameAlreadyExists => 10010,
+            Self::PasswordDiffer => 10011,
         }
     }
 }
@@ -53,6 +56,7 @@ impl Error for AuthError {
             Self::Database { source: ref e } => Some(e),
             Self::Redis { source: ref e } => Some(e),
             Self::Bcrypt { source: ref e } => Some(e),
+            Self::JWT { source: ref e } => Some(e),
             _ => None,
         }
     }
@@ -74,7 +78,8 @@ impl From<AuthError> for APIError {
             AuthError::Service(_)
             | AuthError::Database { .. }
             | AuthError::Redis { .. }
-            | AuthError::Bcrypt { .. } => APIError::InternalError(e),
+            | AuthError::Bcrypt { .. }
+            | AuthError::JWT { .. } => APIError::InternalError(e),
             AuthError::UserNotFound => APIError::NotFound(e),
         }
     }
@@ -95,5 +100,11 @@ impl From<RedisError> for AuthError {
 impl From<BcryptError> for AuthError {
     fn from(from: BcryptError) -> AuthError {
         AuthError::Bcrypt { source: from }
+    }
+}
+
+impl From<jsonwebtoken::errors::Error> for AuthError {
+    fn from(from: jsonwebtoken::errors::Error) -> AuthError {
+        AuthError::Service(from.to_string())
     }
 }

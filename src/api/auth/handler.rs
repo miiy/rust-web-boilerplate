@@ -20,7 +20,7 @@ pub async fn login(
     params: web::Json<dto::LoginRequest>,
     app_state: web::Data<AppState>,
 ) -> Result<HttpResponse, Error> {
-    let resp = Service::login(params.into_inner(), &app_state.db)
+    let resp = Service::login(params.into_inner(), &app_state.db, &app_state.jwt)
         .await
         .map_err(APIError::from)?;
     Ok(HttpResponse::Ok().json(resp))
