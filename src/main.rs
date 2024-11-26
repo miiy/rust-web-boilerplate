@@ -2,11 +2,13 @@ use actix_files as fs;
 use actix_web::middleware::Logger;
 use actix_web::{web, App, HttpServer};
 use rust_web::{
-    api::{error, route::config_api, jwt::JWT},
+    api::{jwt::JWT, route::config_api},
     config, db, middleware,
     web::route::config_app,
     web::template::Template,
     web::vite,
+    web::middleware::session,
+    json_config,
     AppState,
 };
 use std::str::FromStr;
@@ -32,10 +34,10 @@ async fn main() -> std::io::Result<()> {
 
     // session
     // cookie secret key
-    let secret_key = middleware::session::SecretKey::from_str(&c.cookie.secret_key)
+    let secret_key = session::SecretKey::from_str(&c.cookie.secret_key)
         .expect("cookie secret_key error.");
     // session store
-    let session_store = middleware::session::redis_store(c.redis.url.clone())
+    let session_store = session::redis_store(c.redis.url.clone())
         .await
         .expect("Failed to open redis");
 
@@ -65,17 +67,13 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(middleware::cors::cors(&c.app.url))
             .wrap(Logger::default())
-            .wrap(middleware::session::session(
+            .wrap(session::session(
                 session_store.clone(),
                 c.cookie.name.clone(),
                 secret_key.clone(),
             ))
             .app_data(shared_data)
-            .app_data(
-                web::JsonConfig::default()
-                    // register error_handler for JSON extractors.
-                    .error_handler(error::json_error_handler),
-            )
+            .app_data(json_config())
             // .service(
             //     web::scope("")
             //         .wrap(middleware::error::error_handlers())

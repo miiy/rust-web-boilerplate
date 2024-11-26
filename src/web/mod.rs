@@ -8,3 +8,4 @@ pub mod post;
 pub mod route;
 pub mod template;
 pub mod vite;
+pub mod middleware;

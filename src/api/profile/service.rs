@@ -1,17 +1,17 @@
 use super::dto;
 use super::model::User;
-use crate::api::user::error::UserError;
+use super::error::ProfileError;
 use sqlx::MySqlPool;
 use time::OffsetDateTime;
 
 pub struct Service;
 
 impl Service {
-    pub async fn user(name: &str, pool: &MySqlPool) -> Result<dto::MeResponse, UserError> {
+    pub async fn profile(name: &str, pool: &MySqlPool) -> Result<dto::ProfileResponse, ProfileError> {
         let user_option = User::find_by_name(&pool, name).await?;
 
         if let Some(user) = user_option {
-            let resp = dto::MeResponse {
+            let resp = dto::ProfileResponse {
                 name: user.name,
                 email: user.email,
                 create_time: user
@@ -23,7 +23,7 @@ impl Service {
             };
             Ok(resp)
         } else {
-            Err(UserError::NotFound)
+            Err(ProfileError::NotFound)
         }
     }
 }

@@ -49,7 +49,7 @@ impl SecretKey {
 
 #[cfg(test)]
 mod tests {
-    use crate::middleware::session::SecretKey;
+    use super::*;
     use std::str::FromStr;
 
     #[test]

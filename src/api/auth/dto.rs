@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use crate::api::jwt::AuthenticatedUser;
+use serde::{Deserialize, Serialize};
 
 // register
 #[derive(Debug, Deserialize)]
@@ -21,7 +21,6 @@ pub struct LoginRequest {
     pub name: String,
     pub password: String,
 }
-
 
 #[derive(Debug, Serialize)]
 pub struct LoginResponse {

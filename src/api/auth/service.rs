@@ -2,10 +2,9 @@ use super::dto::{LoginRequest, LoginResponse, RegisterRequest, RegisterResponse}
 use super::error::AuthError;
 use super::model::User;
 use super::password;
+use crate::api::jwt::{AuthenticatedUser, JWT};
 use sqlx::MySqlPool;
 use time::OffsetDateTime;
-use crate::api::jwt::{JWT, AuthenticatedUser};
-
 
 pub struct Service;
 
@@ -53,7 +52,11 @@ impl Service {
         Ok(())
     }
 
-    pub async fn login(req: LoginRequest, pool: &MySqlPool, jwt: &JWT) -> Result<LoginResponse, AuthError> {
+    pub async fn login(
+        req: LoginRequest,
+        pool: &MySqlPool,
+        jwt: &JWT,
+    ) -> Result<LoginResponse, AuthError> {
         Self::validate_login(&req)?;
 
         let user_potion = User::find_by_name(&pool, req.name).await?;

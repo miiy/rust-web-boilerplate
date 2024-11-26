@@ -1,6 +1,6 @@
+use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, TokenData, Validation};
 use serde::{Deserialize, Serialize};
-use jsonwebtoken::{encode, decode, Header, Validation, EncodingKey, DecodingKey, TokenData};
-use time::{OffsetDateTime, Duration};
+use time::{Duration, OffsetDateTime};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
@@ -8,7 +8,6 @@ pub struct Claims {
     pub company: String,
     pub exp: i64,
 }
-
 
 #[derive(Debug, Serialize, Clone)]
 pub struct AuthenticatedUser {
@@ -21,12 +20,13 @@ pub struct JWT {
     pub expires_in: u32,
 }
 
+pub enum JWTError {
+    DecodeError { source: jsonwebtoken::errors::Error },
+}
+
 impl JWT {
     pub fn new(secret: String, expires_in: u32) -> Self {
-        Self {
-            secret,
-            expires_in,
-        }
+        Self { secret, expires_in }
     }
 
     pub fn create_claims(&self, sub: String) -> Claims {
@@ -38,11 +38,19 @@ impl JWT {
     }
 
     pub fn encode(&self, claims: &Claims) -> jsonwebtoken::errors::Result<String> {
-        encode(&Header::default(), &claims, &EncodingKey::from_secret(self.secret.as_bytes()))
+        encode(
+            &Header::default(),
+            &claims,
+            &EncodingKey::from_secret(self.secret.as_bytes()),
+        )
     }
 
     pub fn decode(&self, token: &str) -> jsonwebtoken::errors::Result<TokenData<Claims>> {
-        decode::<Claims>(&token, &DecodingKey::from_secret(self.secret.as_bytes()), &Validation::default())
+        decode::<Claims>(
+            &token,
+            &DecodingKey::from_secret(self.secret.as_bytes()),
+            &Validation::default(),
+        )
     }
 }
 

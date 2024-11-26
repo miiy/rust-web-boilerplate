@@ -1,3 +1,2 @@
-pub mod auth;
-pub mod authorization;
-pub mod say_hi;
+pub mod auth_validator;
+pub mod authentication;
