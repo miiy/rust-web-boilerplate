@@ -7,7 +7,6 @@ edition = "2021"
 
 [dependencies]
 actix-web = "4"
-actix-cors = "0.7.0"
 actix-files = "0.6.6"
 actix-session = { version = "0.10.1", features = ["redis-session"] }
 actix-web-httpauth = "0.8.2"
@@ -21,10 +20,11 @@ serde_json = "1.0"
 tera = "1.20.0"
 time = { version = "0.3.36", features = ["macros", "serde"] }
 # chrono = { version = "0.4.38", features = ["serde"] }
-sqlx = { version = "0.8", features = ["runtime-tokio", "mysql", "time"] }
 redis = { version = "0.27.4", features = ["tokio-comp"] }
 bcrypt = "0.15.1"
 base64 = "0.22.1"
 paginator = "0.2.6"
-jsonwebtoken = "9.3.0"
 futures-util = "0.3.31"
+reqwest = { version = "0.12", features = ["json"] }
+tokio = { version = "1.42.0", features = ["full"] }
+rand = "0.8.5"

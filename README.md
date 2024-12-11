@@ -1,19 +1,14 @@
 # rust-web-boilerplate
 
-Rust web boilerplate with Actix Web, SQLx, redis-rs, Tera, Vue 3, Vite
+Rust web boilerplate with Actix Web, Tera, Vue 3, Vite
 
 # Required
-
-- MySQL
-- Redis
 
 ## Features
 
 - Modular design
 - Http server: [Actix Web](https://github.com/actix/actix-web)
 - Time: [time-rs](https://github.com/time-rs/time)
-- Database: MySQL [SQLx](https://github.com/launchbadge/sqlx) 
-- Cache: Redis [redis-rs](https://github.com/redis-rs/redis-rs)
 - Json: [serde](https://github.com/serde-rs/serde)
 - Config: [config-rs](https://github.com/rust-cli/config-rs)
 - CORS
@@ -31,14 +26,7 @@ The project adopts a modular architectural design.
 ├── frontend      // frontend files
 ├── migrations    // database migrations files
 ├── src
-│ ├── api         // api modules
-│ │ ├── user      // user module
-│ │ ├── post      // post module
-│ │ ├── error.rs  // api error
-│ │ ├── mod.rs
-│ │ └── route.rs  // api routes
-│ ├── middleware  // actix middleware
-│ ├── web         // web modules
+│ ├── server      // web modules
 │ │ ├── auth      // auth module
 │ │ ├── index     // index module
 │ │ ├── error.rs  // web error
@@ -56,27 +44,11 @@ The project adopts a modular architectural design.
 └── README.md
 ```
 
-API module structure
-
-```text
-├── src
-│ ├── api
-│ │ ├── post            // module name
-│ │ │ ├── error.rs      // error
-│ │ │ ├── handler.rs    // handler
-│ │ │ ├── service.rs    // service logic
-│ │ │ ├── mod.rs
-│ │ │ ├── route.rs      // module routes
-│ │ │ ├── repository.rs // repository
-│ │ │ ├── dto.rs        // request and response struct
-│ │ │ └── model.rs      // model
-```
-
 WEB module structure
 
 ```text
 ├── src
-│ ├── web
+│ ├── server
 │ │ ├── post
 │ │ │ ├── handler.rs  // handler
 │ │ │ ├── service.rs  // service
@@ -87,16 +59,6 @@ WEB module structure
 ```
 
 ## Modules
-
-API 
-
-```text
-Auth: register, login
-
-User: me
-
-Post: create, update, delete, detail, list
-```
 
 WEB
 
@@ -111,27 +73,3 @@ Post
 ```
 
 ## Getting Started
-
-create database
-
-```sql
-CREATE DATABASE rust_web DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-```
-
-migrate
-
-```bash
-cargo install sqlx-cli
-export DATABASE_URL=mysql://root:123456@localhost/rust_web
-sqlx migrate run
-```
-
-edit config
-
-config/*.yaml
-
-## Running
-
-```bash
-cargo run
-```

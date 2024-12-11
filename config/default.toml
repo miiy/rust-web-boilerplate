@@ -1,7 +1,7 @@
 [app]
 name = "Actix Web"
 key = "your-secret-key" # Should be a strong random key
-url = "http://127.0.0.1:8080"
+url = "http://127.0.0.1:8081"
 debug = false
 
 [app.metadata]
@@ -10,10 +10,7 @@ keywords = "rust, actix, web, api"
 description = "A powerful web application built with Actix Web framework"
 
 [server]
-addrs = "127.0.0.1:8080"
-
-[database]
-url = "mysql://root:123456@127.0.0.1:3306/rust_web"
+addrs = "127.0.0.1:8081"
 
 [redis]
 url = "redis://127.0.0.1:6379"
@@ -22,6 +19,8 @@ url = "redis://127.0.0.1:6379"
 name = "SESSIONID"
 secret_key = "dpp7QFH3QR41Ims6mIjdTysAtkM9bOoN3gJAaF0X5HqbKdGdVhWQcdMcJTtqjpUAL4EolObWxhG9s8uN2e32vA=="
 
-[jwt]
-secret = "your-secret-key"
-expires_in = 12
+[post_client]
+addrs = ["http://127.0.0.1:8080"]
+
+[auth_client]
+addrs = ["http://127.0.0.1:8080"]

@@ -6,10 +6,10 @@ use std::env;
 pub struct Config {
     pub app: App,
     pub server: Server,
-    pub database: Database,
     pub redis: Redis,
     pub cookie: Cookie,
-    pub jwt: JWT,
+    pub post_client: Client,
+    pub auth_client: Client,
 }
 
 #[derive(Debug, Deserialize)]
@@ -34,11 +34,6 @@ pub struct Server {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct Database {
-    pub url: String,
-}
-
-#[derive(Debug, Deserialize)]
 pub struct Redis {
     pub url: String,
 }
@@ -50,9 +45,8 @@ pub struct Cookie {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct JWT {
-    pub secret: String,
-    pub expires_in: u32,
+pub struct Client {
+    pub addrs: Vec<String>,
 }
 
 impl Config {

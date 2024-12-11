@@ -2,14 +2,8 @@ use actix_files as fs;
 use actix_web::middleware::Logger;
 use actix_web::{web, App, HttpServer};
 use rust_web::{
-    api::{jwt::JWT, route::config_api},
-    config, db, middleware,
-    web::route::config_app,
-    web::template::Template,
-    web::vite,
-    web::middleware::session,
-    json_config,
-    AppState,
+    client::auth::client::AuthClient, client::post::client::PostClient, config, middleware,
+    middleware::session, server::route::config_app, template::Template, vite, AppState,
 };
 use std::str::FromStr;
 
@@ -21,21 +15,13 @@ async fn main() -> std::io::Result<()> {
     // env_logger
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
-    // db
-    let pool = db::init_pool(&c.database.url)
-        .await
-        .expect("Failed to create pool");
-
     // redis
     let redis = redis::Client::open(c.redis.url.clone()).expect("Failed to open redis");
 
-    // jwt
-    let jwt = JWT::new(c.jwt.secret.clone(), c.jwt.expires_in);
-
     // session
     // cookie secret key
-    let secret_key = session::SecretKey::from_str(&c.cookie.secret_key)
-        .expect("cookie secret_key error.");
+    let secret_key =
+        session::SecretKey::from_str(&c.cookie.secret_key).expect("cookie secret_key error.");
     // session store
     let session_store = session::redis_store(c.redis.url.clone())
         .await
@@ -54,18 +40,23 @@ async fn main() -> std::io::Result<()> {
         vite::make_imported_chunks(manifest.clone()),
     );
 
+    // post client
+    let post_client = PostClient::new(c.post_client.addrs.clone());
+
+    // auth client
+    let auth_client = AuthClient::new(c.auth_client.addrs.clone());
+
     // actix web
     log::info!("Starting HTTP server at {}", c.server.addrs);
     HttpServer::new(move || {
         let shared_data = web::Data::new(AppState {
-            db: pool.clone(),
             redis: redis.clone(),
             template: template.clone(),
-            jwt: jwt.clone(),
+            post_client: post_client.clone(),
+            auth_client: auth_client.clone(),
         });
 
         App::new()
-            .wrap(middleware::cors::cors(&c.app.url))
             .wrap(Logger::default())
             .wrap(session::session(
                 session_store.clone(),
@@ -73,14 +64,12 @@ async fn main() -> std::io::Result<()> {
                 secret_key.clone(),
             ))
             .app_data(shared_data)
-            .app_data(json_config())
             // .service(
             //     web::scope("")
-            //         .wrap(middleware::error::error_handlers())
+            //         .wrap(middleware::error_handler::error_handlers())
             //         .configure(config_app),
             // )
             .configure(config_app)
-            .service(web::scope("/api").configure(config_api))
             .service(fs::Files::new("/static", "./frontend/dist").use_last_modified(true))
             .service(web::resource("/favicon.ico").route(
                 web::get().to(|| async { fs::NamedFile::open("./frontend/dist/favicon.ico") }),

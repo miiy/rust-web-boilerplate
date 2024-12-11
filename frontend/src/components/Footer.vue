@@ -4,7 +4,7 @@
         <div class="row">
             <div class="col-lg-3 mb-3">
                 <a class="d-inline-flex align-items-center mb-2 link-dark text-decoration-none" href="/" aria-label="Bootstrap">
-                    <span class="fs-5">Vite</span>
+                    <span class="fs-5">Rust-Web</span>
                 </a>
                 <ul class="list-unstyled small text-muted">
                     <li class="mb-2">desc</li>
