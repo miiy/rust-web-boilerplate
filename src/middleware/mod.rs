@@ -1,2 +1,2 @@
-pub mod error_handler;
+pub mod error_handlers;
 pub mod session;

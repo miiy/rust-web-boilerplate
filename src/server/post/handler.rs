@@ -27,7 +27,6 @@ pub async fn index(
         page: page,
         page_size: page_size,
     };
-    println!("page: {}", page);
 
     let resp = super::service::index(&req, &app_state.post_client).await?;
 

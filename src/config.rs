@@ -2,7 +2,7 @@ use config::{ConfigError, File};
 use serde::{Deserialize, Serialize};
 use std::env;
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Config {
     pub app: App,
     pub server: Server,
@@ -12,7 +12,7 @@ pub struct Config {
     pub auth_client: Client,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct App {
     pub name: String,
     pub url: String,
@@ -21,30 +21,30 @@ pub struct App {
     pub metadata: AppMetaData,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct AppMetaData {
     pub title: String,
     pub keywords: String,
     pub description: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Server {
     pub addrs: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Redis {
     pub url: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Cookie {
     pub name: String,
     pub secret_key: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Client {
     pub addrs: Vec<String>,
 }

@@ -2,10 +2,9 @@ use actix_files as fs;
 use actix_web::middleware::Logger;
 use actix_web::{web, App, HttpServer};
 use rust_web::{
-    client::auth::client::AuthClient, client::post::client::PostClient, config, middleware,
-    middleware::session, server::route::config_app, template::Template, vite, AppState,
+    config, middleware, middleware::session, redis_session_store, server::route::config_app,
+    AppState,
 };
-use std::str::FromStr;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -15,67 +14,34 @@ async fn main() -> std::io::Result<()> {
     // env_logger
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
-    // redis
-    let redis = redis::Client::open(c.redis.url.clone()).expect("Failed to open redis");
-
-    // session
-    // cookie secret key
-    let secret_key =
-        session::SecretKey::from_str(&c.cookie.secret_key).expect("cookie secret_key error.");
-    // session store
-    let session_store = session::redis_store(c.redis.url.clone())
-        .await
-        .expect("Failed to open redis");
-
-    // template
-    let mut template =
-        Template::new("templates/**/*.html", c.app.metadata.into()).expect("template error");
-
-    // manifest
-    let manifest = vite::Manifest::new("./frontend/dist/.vite/manifest.json")
-        .expect("Failed to parse manifest");
-    template.register_function("manifest", vite::make_manifest(manifest.clone()));
-    template.register_function(
-        "imported_chunks",
-        vite::make_imported_chunks(manifest.clone()),
-    );
-
-    // post client
-    let post_client = PostClient::new(c.post_client.addrs.clone());
-
-    // auth client
-    let auth_client = AuthClient::new(c.auth_client.addrs.clone());
+    let (secret_key, session_store) = redis_session_store(&c).await;
 
     // actix web
     log::info!("Starting HTTP server at {}", c.server.addrs);
+    let cookie_name = c.cookie.name.clone();
+    let addrs = c.server.addrs.clone();
     HttpServer::new(move || {
-        let shared_data = web::Data::new(AppState {
-            redis: redis.clone(),
-            template: template.clone(),
-            post_client: post_client.clone(),
-            auth_client: auth_client.clone(),
-        });
-
+        let app_state = AppState::new(&c);
+        let shared_data = web::Data::new(app_state);
         App::new()
             .wrap(Logger::default())
             .wrap(session::session(
                 session_store.clone(),
-                c.cookie.name.clone(),
+                cookie_name.clone(),
                 secret_key.clone(),
             ))
             .app_data(shared_data)
-            // .service(
-            //     web::scope("")
-            //         .wrap(middleware::error_handler::error_handlers())
-            //         .configure(config_app),
-            // )
-            .configure(config_app)
             .service(fs::Files::new("/static", "./frontend/dist").use_last_modified(true))
             .service(web::resource("/favicon.ico").route(
                 web::get().to(|| async { fs::NamedFile::open("./frontend/dist/favicon.ico") }),
             ))
+            .service(
+                web::scope("")
+                    .wrap(middleware::error_handlers::error_handlers())
+                    .configure(config_app),
+            )
     })
-    .bind(&c.server.addrs)?
+    .bind(&addrs)?
     .run()
     .await
 }
