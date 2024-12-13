@@ -1,14 +1,13 @@
-use super::dto;
+use super::dto::*;
 use super::service;
 use super::template::*;
 use crate::error::AppError;
 use crate::AppState;
 use actix_identity::Identity;
-use actix_session::Session;
-use actix_web::{web, Error, HttpResponse};
+use actix_web::{web, Error, HttpRequest, HttpResponse};
 
 // GET /register
-pub async fn register(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
+pub async fn show_register(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = RegisterTemplate {};
     let html =
         app_state
@@ -17,8 +16,23 @@ pub async fn register(app_state: web::Data<AppState>) -> Result<HttpResponse, Er
     Ok(HttpResponse::Ok().body(html))
 }
 
+// POST /register
+pub async fn register(
+    params: web::Json<RegisterRequest>,
+    app_state: web::Data<AppState>,
+) -> Result<HttpResponse, Error> {
+    let client = &app_state.auth_client;
+    let _resp = service::register(params.into_inner(), client)
+        .await
+        .map_err(AppError::from)?;
+
+    Ok(HttpResponse::Found()
+        .append_header(("location", "/login"))
+        .finish())
+}
+
 // GET /login
-pub async fn login(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
+pub async fn show_login(app_state: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = LoginTemplate {};
     let html = app_state
         .template
@@ -27,27 +41,32 @@ pub async fn login(app_state: web::Data<AppState>) -> Result<HttpResponse, Error
 }
 
 // POST /login
-pub async fn session_login(
-    params: web::Json<dto::LoginRequest>,
-    session: Session,
+pub async fn login(
+    request: HttpRequest,
+    params: web::Json<LoginRequest>,
+    app_state: web::Data<AppState>,
 ) -> Result<HttpResponse, Error> {
-    let _ok = service::login(params.into_inner(), session)
+    let client = &app_state.auth_client;
+    let _resp = service::login(request, params.into_inner(), client)
         .await
         .map_err(AppError::from)?;
-    Ok(HttpResponse::Ok().body(""))
+
+    Ok(HttpResponse::Found()
+        .append_header(("location", "/"))
+        .finish())
 }
 
-pub async fn me(user: Identity, session: Session) -> Result<HttpResponse, Error> {
-    println!("{:?}", user.id());
-
-    let user_id: Option<i64> = session.get("user_id").unwrap_or(None);
-    println!("user_id: {:?}", user_id);
-    Ok(HttpResponse::Ok().body(""))
+pub async fn profile(user: Option<Identity>) -> Result<HttpResponse, Error> {
+    if let Some(user) = user {
+        let resp = format!("Welcome! {}", user.id().unwrap());
+        return Ok(HttpResponse::Ok().body(resp));
+    }
+    Err(AppError::Unauthorized.into())
 }
 
 // GET /logout
-pub async fn logout(session: Session) -> Result<HttpResponse, Error> {
-    service::logout(session).await.map_err(AppError::from)?;
+pub async fn logout(user: Identity) -> Result<HttpResponse, Error> {
+    user.logout();
     Ok(HttpResponse::Found()
         .append_header(("location", "/"))
         .finish())

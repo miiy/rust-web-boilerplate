@@ -7,7 +7,7 @@ pub struct Config {
     pub app: App,
     pub server: Server,
     pub redis: Redis,
-    pub cookie: Cookie,
+    pub session: Session,
     pub post_client: Client,
     pub auth_client: Client,
 }
@@ -39,9 +39,10 @@ pub struct Redis {
 }
 
 #[derive(Clone, Debug, Deserialize)]
-pub struct Cookie {
-    pub name: String,
+pub struct Session {
+    pub cookie_name: String,
     pub secret_key: String,
+    pub expiration: u64,
 }
 
 #[derive(Clone, Debug, Deserialize)]

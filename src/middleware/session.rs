@@ -1,16 +1,26 @@
+use crate::config;
 use actix_session::storage::{RedisSessionStore, SessionStore};
-use actix_session::SessionMiddleware;
+use actix_session::{config::PersistentSession, SessionMiddleware};
 use actix_web::cookie::Key;
 use base64::prelude::*;
 use std::error::Error;
 use std::str::FromStr;
+use std::time::Duration;
 
-pub fn session<T>(store: T, cookie_name: String, secret_key: SecretKey) -> SessionMiddleware<T>
+pub fn session<T>(store: T, c: config::Session) -> SessionMiddleware<T>
 where
     T: SessionStore + Clone,
 {
+    let expiration = Duration::from_secs(c.expiration);
+    let cookie_name = c.cookie_name.clone();
+    let secret_key = SecretKey::from_str(c.secret_key.as_str()).expect("cookie secret_key error.");
+
     SessionMiddleware::builder(store.clone(), secret_key.key())
         .cookie_name(cookie_name)
+        // disable secure cookie for local testing
+        .cookie_secure(false)
+        // Set a ttl for the cookie if the identity should live longer than the user session
+        .session_lifecycle(PersistentSession::default().session_ttl(expiration.try_into().unwrap()))
         .build()
 }
 

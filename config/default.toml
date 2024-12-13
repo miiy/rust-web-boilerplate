@@ -15,9 +15,10 @@ addrs = "127.0.0.1:8081"
 [redis]
 url = "redis://127.0.0.1:6379"
 
-[cookie]
-name = "SESSIONID"
+[session]
+cookie_name = "SESSIONID"
 secret_key = "dpp7QFH3QR41Ims6mIjdTysAtkM9bOoN3gJAaF0X5HqbKdGdVhWQcdMcJTtqjpUAL4EolObWxhG9s8uN2e32vA=="
+expiration = 86400 # seconds: 24 * 60 * 60
 
 [post_client]
 addrs = ["http://127.0.0.1:8080"]

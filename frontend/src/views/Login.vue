@@ -8,9 +8,9 @@
 
             <form @submit.prevent="handleLogin">
               <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" v-model="email" required
-                  placeholder="Enter your email">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" v-model="name" required
+                  placeholder="Enter your name">
               </div>
 
               <div class="mb-3">
@@ -34,7 +34,7 @@ import { useRouter } from 'vue-router'
 import { authApi } from '@/api/auth'
 
 const router = useRouter()
-const email = ref('')
+const name = ref('')
 const password = ref('')
 const errorMessage = ref('')
 
@@ -42,11 +42,11 @@ const handleLogin = async () => {
   try {
     errorMessage.value = ''
     const response = await authApi.login({
-      email: email.value,
+      name: name.value,
       password: password.value
     })
-
-    localStorage.setItem('token', response.token)
+    console.log(response)
+    // localStorage.setItem('token', response.token)
     router.push('/')
   } catch (error) {
     errorMessage.value = error.message || '登录失败，请重试'

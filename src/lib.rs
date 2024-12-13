@@ -1,13 +1,9 @@
 use crate::{
     client::{auth::client::AuthClient, post::client::PostClient},
     config::Config,
-    middleware::session,
-    middleware::session::SecretKey,
     template::Template,
     vite::Manifest,
 };
-use actix_session::storage::RedisSessionStore;
-use std::str::FromStr;
 pub mod client;
 pub mod config;
 pub mod error;
@@ -56,16 +52,4 @@ impl AppState {
             auth_client: auth_client,
         }
     }
-}
-
-pub async fn redis_session_store(c: &Config) -> (SecretKey, RedisSessionStore) {
-    // session
-    // cookie secret key
-    let secret_key = SecretKey::from_str(&c.cookie.secret_key).expect("cookie secret_key error.");
-    // session store
-    let session_store = session::redis_store(c.redis.url.clone())
-        .await
-        .expect("Failed to open redis");
-
-    (secret_key, session_store)
 }

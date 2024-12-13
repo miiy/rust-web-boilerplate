@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 
+// Register
 #[derive(Debug, Serialize)]
 pub struct RegisterRequest {
     pub name: String,
@@ -13,6 +14,7 @@ pub struct RegisterResponse {
     pub message: String,
 }
 
+// Login
 #[derive(Debug, Serialize)]
 pub struct LoginRequest {
     pub name: String,

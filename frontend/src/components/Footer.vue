@@ -27,7 +27,7 @@
         <!--end of row-->
         <div class="row">
             <div class="col-lg-12 col-12">
-                © 2022 rust-web-boileplate
+                © 2024 rust-web-boileplate
             </div>
         </div>
     </div>

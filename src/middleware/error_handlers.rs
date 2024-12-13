@@ -94,7 +94,6 @@ fn get_error_response<B>(res: &ServiceResponse<B>, error: &str) -> HttpResponse 
     }
 }
 
-
 fn get_template_name(status_code: StatusCode) -> &'static str {
     match status_code {
         StatusCode::NOT_FOUND => "error/404.html",
